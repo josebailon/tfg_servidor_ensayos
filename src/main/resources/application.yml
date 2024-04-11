@@ -1,0 +1,8 @@
+## YAML Template.
+---
+security:
+     jwt:
+         secret-key: keydeencriptacion
+spring:
+    application:
+        name: servidor aaaaaaaaaaaaaaaaaaaaaaaaaa
