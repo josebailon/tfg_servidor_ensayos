@@ -7,13 +7,17 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.controller;
 
-import java.util.List;
 import josebailon.ensayos.servidor.model.LoginRequest;
 import josebailon.ensayos.servidor.model.LoginResponse;
-import josebailon.ensayos.servidor.security.JwtIssuer;
+import josebailon.ensayos.servidor.model.RegistrarRequest;
+import josebailon.ensayos.servidor.model.UsuarioEntity;
+import josebailon.ensayos.servidor.service.IAuthService;
+import josebailon.ensayos.servidor.service.exception.DuplicatedEmailException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,15 +29,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     
-    //injeccion de manejador de token
-    private final JwtIssuer jwtIssuer;
+    private final IAuthService authService;
     
     //Anotaciones
     //RequestBody transforma el cuerpo de la peticion http al objeto java
     //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
     @PostMapping("/auth/login")
     public LoginResponse login(@RequestBody @Validated LoginRequest request){
-        String token = jwtIssuer.issue(1L, request.getUsername(), List.of("USER"));
-        return LoginResponse.builder().accessToken(token).build();
+        return authService.intentoLogin(request.getEmail(), request.getPassword());
     }
+    
+    @PutMapping("/auth/registrar")
+    public UsuarioEntity registrar(@RequestBody @Validated RegistrarRequest request) throws DuplicatedEmailException{
+        return authService.registrar(request.getEmail(),request.getPassword());
+    }
+    
+    
 }//end AuthController

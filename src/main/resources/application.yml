@@ -5,4 +5,13 @@ security:
          secret-key: keydeencriptacion
 spring:
     application:
-        name: servidor aaaaaaaaaaaaaaaaaaaaaaaaaa
+        name: Ensayos Servidor
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        password: 
+        url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/db_ensayos
+        username: root
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true

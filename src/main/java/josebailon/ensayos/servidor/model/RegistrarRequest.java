@@ -16,7 +16,7 @@ import lombok.Getter;
  */
 @Getter //autogenerar getters
 @Builder //autogenerar constructor
-public class LoginRequest {
+public class RegistrarRequest {
     private String email;
     private String password;
 }//end LoginRequest

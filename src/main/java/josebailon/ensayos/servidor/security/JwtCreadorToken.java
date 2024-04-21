@@ -17,17 +17,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * Crador de token a partir de usuario y email
  * @author Jose Javier Bailon Ortiz
  */
 // Anotaciones
 //Component hace que la clase sea un bean y spring controle su ciclo de vida así como su injeccion como dependencia
 @Component
 @RequiredArgsConstructor
-public class JwtIssuer {
-    private final JwtProperties properties;
+public class JwtCreadorToken {
+    private final JwtPropiedades properties;
     
-    public String issue(long userId, String email, List<String> roles){
+    public String crear(long userId, String email, List<String> roles){
         return JWT.create()
                 .withSubject(String.valueOf(userId))
                 .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))

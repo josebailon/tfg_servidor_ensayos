@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties("security.jwt")
-public class JwtProperties {
+public class JwtPropiedades {
     /**
      * Clave de seguridad para token de acceso
      */
