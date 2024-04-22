@@ -8,7 +8,7 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.security;
 
 import java.util.List;
-import josebailon.ensayos.servidor.model.UsuarioEntity;
+import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.service.IUsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +29,7 @@ public class UserPrincipalService implements UserDetailsService{
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UsuarioEntity usuario = usuarioService.findByEmail(username).orElseThrow();
+        Usuario usuario = usuarioService.findByEmail(username).orElseThrow();
         return UserPrincipal.builder()
                 .UserId(usuario.getId())
                 .email(usuario.getEmail())

@@ -5,7 +5,7 @@ LICENCIA JOSE JAVIER BO
 Lista de paquetes:
  */
 
-package josebailon.ensayos.servidor.model;
+package josebailon.ensayos.servidor.model.auth;
 
 import lombok.Builder;
 import lombok.Getter;

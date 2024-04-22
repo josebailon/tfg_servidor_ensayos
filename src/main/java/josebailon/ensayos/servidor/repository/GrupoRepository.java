@@ -8,6 +8,8 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.repository;
 
 import java.util.Optional;
+import java.util.UUID;
+import josebailon.ensayos.servidor.model.entity.Grupo;
 import josebailon.ensayos.servidor.model.entity.Usuario;
 import org.springframework.data.repository.CrudRepository;
 
@@ -15,7 +17,5 @@ import org.springframework.data.repository.CrudRepository;
  *
  * @author Jose Javier Bailon Ortiz
  */
-public interface UsuarioRepository  extends CrudRepository<Usuario, Long>{
-    
-    Optional<Usuario> findByEmail(String email);
+public interface GrupoRepository  extends CrudRepository<Grupo, UUID>{
 }//end UsuarioRepository

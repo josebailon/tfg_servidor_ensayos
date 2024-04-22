@@ -5,8 +5,9 @@ LICENCIA JOSE JAVIER BO
 Lista de paquetes:
  */
 
-package josebailon.ensayos.servidor.model;
+package josebailon.ensayos.servidor.model.request;
 
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,7 +17,12 @@ import lombok.Getter;
  */
 @Getter //autogenerar getters
 @Builder //autogenerar constructor
-public class LoginRequest {
-    private String email;
-    private String password;
-}//end LoginRequest
+public class GrupoCreateRequest {
+    private UUID id;
+    
+    private String nombre;
+
+    private String descripcion;
+    
+    private int version;
+}//end GrupoCreateRequest

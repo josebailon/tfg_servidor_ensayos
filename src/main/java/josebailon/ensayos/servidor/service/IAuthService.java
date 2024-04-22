@@ -6,8 +6,8 @@ Lista de paquetes:
  */
 package josebailon.ensayos.servidor.service;
 
-import josebailon.ensayos.servidor.model.LoginResponse;
-import josebailon.ensayos.servidor.model.UsuarioEntity;
+import josebailon.ensayos.servidor.model.auth.LoginResponse;
+import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.service.exception.DuplicatedEmailException;
 
 /**
@@ -16,5 +16,5 @@ import josebailon.ensayos.servidor.service.exception.DuplicatedEmailException;
  */
 public interface IAuthService {
     public LoginResponse intentoLogin(String email, String password);
-    public UsuarioEntity registrar(String email, String password) throws DuplicatedEmailException;
+    public Usuario registrar(String email, String password) throws DuplicatedEmailException;
 }

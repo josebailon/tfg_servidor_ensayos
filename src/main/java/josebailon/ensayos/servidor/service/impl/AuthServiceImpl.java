@@ -8,8 +8,8 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.service.impl;
 
 import java.util.List;
-import josebailon.ensayos.servidor.model.LoginResponse;
-import josebailon.ensayos.servidor.model.UsuarioEntity;
+import josebailon.ensayos.servidor.model.auth.LoginResponse;
+import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.repository.UsuarioRepository;
 import josebailon.ensayos.servidor.security.JwtCreadorToken;
 import josebailon.ensayos.servidor.security.JwtPropiedades;
@@ -61,15 +61,16 @@ public class AuthServiceImpl implements IAuthService{
     
     
     @Override
-    public UsuarioEntity registrar(String email, String password) throws DuplicatedEmailException {
+    public Usuario registrar(String email, String password) throws DuplicatedEmailException {
         
         if (!repositorio.findByEmail(email).isEmpty()) {
             throw new DuplicatedEmailException(String.format("El email: %s ya está ocupado", email));
         }
         
-        UsuarioEntity usuario = new UsuarioEntity();
+        Usuario usuario = new Usuario();
         usuario.setEmail(email);
         usuario.setPassword(new BCryptPasswordEncoder().encode(password));
+        usuario.setRole("usuario");
         return repositorio.save(usuario);
     }
 }//end AuthService

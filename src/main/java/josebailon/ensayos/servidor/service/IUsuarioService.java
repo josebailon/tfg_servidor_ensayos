@@ -7,12 +7,13 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.service;
 
 import java.util.Optional;
-import josebailon.ensayos.servidor.model.UsuarioEntity;
+import josebailon.ensayos.servidor.model.entity.Usuario;
 
 /**
  *
  * @author Jose Javier Bailon Ortiz
  */
 public interface IUsuarioService {
-    public Optional<UsuarioEntity> findByEmail(String email);
+    public Optional<Usuario> findByEmail(String email);
+    public Optional<Usuario> findById(Long id);
 }
