@@ -4,16 +4,13 @@ LICENCIA JOSE JAVIER BO
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
 Lista de paquetes:
  */
-package josebailon.ensayos.servidor.service;
-
-import java.util.Optional;
-import josebailon.ensayos.servidor.model.entity.Usuario;
+package josebailon.ensayos.servidor.model.vistas;
 
 /**
  *
  * @author Jose Javier Bailon Ortiz
  */
-public interface IUsuarioService {
-    public Optional<Usuario> findByEmail(String email);
-    public Optional<Usuario> findById(Long idUsuario);
+public interface Vista {
+    public class Esencial{}
+    public class Completa extends Esencial{}
 }

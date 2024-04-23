@@ -7,6 +7,8 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.service.exception;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import josebailon.ensayos.servidor.model.vistas.Vista;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +36,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(VersionIncorrectaException.class)
      @RequestMapping(produces = "application/json")
+    @JsonView(Vista.Esencial.class)
     public ResponseEntity<Object> handleVersionIncorrectaException(final VersionIncorrectaException ex){
         return new ResponseEntity<Object>(ex.getValor(),HttpStatus.CONFLICT);
 

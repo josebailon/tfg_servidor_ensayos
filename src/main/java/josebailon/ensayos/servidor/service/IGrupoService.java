@@ -18,7 +18,13 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Jose Javier Bailon Ortiz
  */
 public interface IGrupoService {
-    public Grupo create(   UUID id,String nombre, String descripcion, int version, Long usuario_id);
+    public Grupo create(   UUID idGrupo,String nombre, String descripcion, int version, Long idUsuario);
 
-    public Grupo edit(Grupo request, Long userId) throws ResponseStatusException, VersionIncorrectaException;
+    public Grupo edit(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
+
+    public Grupo delete(Grupo request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
+
+    public Grupo addUsuario(UUID idGrupo, String emailusuario, Long idUsuario);
+
+    public Grupo deleteUsuario(UUID idGrupo, String emailusuario, Long idUsuario);
 }

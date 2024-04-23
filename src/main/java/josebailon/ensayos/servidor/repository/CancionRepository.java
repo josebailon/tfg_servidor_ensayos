@@ -8,12 +8,12 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.repository;
 
 import java.util.UUID;
-import josebailon.ensayos.servidor.model.entity.Grupo;
+import josebailon.ensayos.servidor.model.entity.Cancion;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author Jose Javier Bailon Ortiz
  */
-public interface GrupoRepository  extends CrudRepository<Grupo, UUID>{
+public interface CancionRepository  extends CrudRepository<Cancion, UUID>{
 }//end UsuarioRepository

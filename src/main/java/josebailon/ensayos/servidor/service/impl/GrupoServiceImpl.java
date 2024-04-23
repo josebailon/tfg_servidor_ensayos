@@ -41,15 +41,15 @@ public class GrupoServiceImpl implements IGrupoService{
 
     @Override
     @Transactional
-    public Grupo create(UUID id, String nombre, String descripcion, int version, Long usuario_id) {
-            Optional<Usuario> usuario = repositorioUsuario.findById(usuario_id);
+    public Grupo create(UUID idGrupo, String nombre, String descripcion, int version, Long idUsuario) {
+            Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
             if (usuario.isPresent()){
                 Usuario u = usuario.get();
                 Grupo g = new Grupo();
-                g.setId(id);
+                g.setId(idGrupo);
                 g.setNombre(nombre);
                 g.setDescripcion(descripcion);
-                g.setVersion(version);
+                g.setVersion(version+1);
                 g.setBorrado(false);
                 g.getUsuarios().add(usuario.get());
                 u.getGrupos().add(g);
@@ -63,16 +63,18 @@ public class GrupoServiceImpl implements IGrupoService{
     }
 
     @Override
-    public Grupo edit(Grupo request, Long userId) throws ResponseStatusException, VersionIncorrectaException {
-        Optional<Usuario> usuario = repositorioUsuario.findById(userId);
+    public Grupo edit(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
+        Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         Optional<Grupo> grupo = repositorioGrupo.findById(request.getId());
-        if (usuario.isPresent() && grupo.isPresent()){
+        if (usuario.isPresent() && grupo.isPresent() && !grupo.get().isBorrado()){
             Usuario u= usuario.get();
             Grupo g= grupo.get();
             if(permitido(u,g)){
                 if (request.getVersion()==g.getVersion()){
-                    request.setVersion(request.getVersion()+1);
-                  return repositorioGrupo.save(request);
+                    g.setVersion(request.getVersion()+1);
+                    g.setNombre(request.getNombre());
+                    g.setDescripcion(request.getDescripcion());
+                  return repositorioGrupo.save(g);
                 }
                 else{
                   throw new VersionIncorrectaException("",g);
@@ -86,8 +88,92 @@ public class GrupoServiceImpl implements IGrupoService{
     }
 
    
+    @Override
+    public Grupo delete(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
+         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
+        Optional<Grupo> grupo = repositorioGrupo.findById(request.getId());
+        if (usuario.isPresent() && grupo.isPresent()&& !grupo.get().isBorrado()){
+            Usuario u= usuario.get();
+            Grupo g= grupo.get();
+            if(permitido(u,g)){
+                if (request.getVersion()==g.getVersion()){
+                    g.setVersion(g.getVersion()+1);
+                    g.setBorrado(true);
+                  return repositorioGrupo.save(g);
+                }
+                else{
+                  throw new VersionIncorrectaException("",g);
+                }
+            }else{
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
+        }
+    }
+       
 
+    /**
+     * Agrega un usuario al grupo
+     * @param idGrupo
+     * @param emailUsuario
+     * @param idUsuario
+     * @return 
+     */
+    @Override
+    public Grupo deleteUsuario(UUID idGrupo, String emailUsuario, Long idUsuario) {
+        Optional<Usuario> usuarioDestino = repositorioUsuario.findByEmail(emailUsuario);
+         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
+         Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
+        if (usuarioDestino.isPresent() && usuario.isPresent() && grupo.isPresent() && !grupo.get().isBorrado()){
+            Usuario u= usuario.get();
+            Grupo g= grupo.get();
+            Usuario uDestino = usuarioDestino.get();
+            //comprobar si el grupo tiene mas de un usuario y si el usuario
+            //si no lo tiene simplemente devolver el grupo
+            if (!g.getUsuarios().contains(uDestino)){
+                System.out.println("No lo tiene");
+                 return g;
+            }            
+            if(permitido(u,g)){
+                    uDestino.getGrupos().remove(g);
+                    g.getUsuarios().remove(uDestino);
+                    g.setVersion(g.getVersion()+1);
+                    repositorioUsuario.save(uDestino);
+                    repositorioGrupo.save(g);
+                    
+                  return g;
+            }else{
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
+        }
+    }
 
+    
+    @Override
+    public Grupo addUsuario(UUID idGrupo, String emailUsuario, Long idUsuario) {
+        Optional<Usuario> usuarioDestino = repositorioUsuario.findByEmail(emailUsuario);
+        Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
+        
+        Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
+        if (usuarioDestino.isPresent() && usuario.isPresent() && grupo.isPresent() && !grupo.get().isBorrado()){
+            Usuario u= usuario.get();
+            Grupo g= grupo.get();
+            Usuario uDestino = usuarioDestino.get();
+            if(permitido(u,g)){
+                    uDestino.getGrupos().add(g);
+                    repositorioUsuario.save(uDestino);
+                    g.setVersion(g.getVersion()+1);
+                  return repositorioGrupo.save(g);
+            }else{
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
+        }    }
+  
     
     /**
      * Devuelve si el usuario u puede acceder al grupo
@@ -98,6 +184,8 @@ public class GrupoServiceImpl implements IGrupoService{
     public boolean permitido(Usuario u, Grupo g){
         return u.getGrupos().contains(g);
     }
-       
+
+
+
     
 }//end UserService

@@ -7,12 +7,14 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import java.util.UUID;
 import josebailon.ensayos.servidor.model.auth.LoginRequest;
 import josebailon.ensayos.servidor.model.auth.LoginResponse;
 import josebailon.ensayos.servidor.model.auth.RegistrarRequest;
 import josebailon.ensayos.servidor.model.entity.Grupo;
 import josebailon.ensayos.servidor.model.entity.Usuario;
-import josebailon.ensayos.servidor.model.request.GrupoCreateRequest;
+import josebailon.ensayos.servidor.model.vistas.Vista;
 import josebailon.ensayos.servidor.security.UserPrincipal;
 import josebailon.ensayos.servidor.service.IAuthService;
 import josebailon.ensayos.servidor.service.IGrupoService;
@@ -22,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,16 +45,32 @@ public class GrupoController {
     //Anotaciones
     //RequestBody transforma el cuerpo de la peticion http al objeto java
     //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
+    @JsonView(Vista.Esencial.class)
     @PostMapping("/grupo")
-    public Grupo create(@RequestBody @Validated GrupoCreateRequest request, @AuthenticationPrincipal UserPrincipal principal){
+    public Grupo create(@RequestBody Grupo request, @AuthenticationPrincipal UserPrincipal principal){
         return grupoService.create(request.getId(), request.getNombre(), request.getDescripcion(), request.getVersion(), principal.getUserId());
     }
-
+    @JsonView(Vista.Esencial.class)
     @PutMapping("/grupo")
     public Grupo edit(@RequestBody @Validated Grupo request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         return grupoService.edit(request, principal.getUserId());
     }
- 
+    @JsonView(Vista.Esencial.class)
+    @DeleteMapping("/grupo")
+    public Grupo delete(@RequestBody @Validated Grupo request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        return grupoService.delete(request, principal.getUserId());
+    }
+    @JsonView(Vista.Esencial.class)
+    @PostMapping("/grupo/{idgrupo}/{emailusuario}")
+    public Grupo addUsuario(@PathVariable String idgrupo, @PathVariable String emailusuario, @AuthenticationPrincipal UserPrincipal principal){
+        return grupoService.addUsuario(UUID.fromString(idgrupo), emailusuario,principal.getUserId());
+    }
+    @JsonView(Vista.Esencial.class)
+    @DeleteMapping("/grupo/{idgrupo}/{emailusuario}")
+    public Grupo deleteUsuario(@PathVariable String idgrupo, @PathVariable String emailusuario, @AuthenticationPrincipal UserPrincipal principal){
+        return grupoService.deleteUsuario(UUID.fromString(idgrupo), emailusuario,principal.getUserId());
+    }
+
     
     
 }//end AuthController

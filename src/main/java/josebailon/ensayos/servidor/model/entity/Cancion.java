@@ -9,16 +9,14 @@ package josebailon.ensayos.servidor.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import josebailon.ensayos.servidor.model.vistas.Vista;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,36 +28,30 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Usuario {
+public class Cancion {
     
     @Id
     @JsonView(Vista.Esencial.class)
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
-    
+    private UUID id;
     @JsonView(Vista.Esencial.class)
-    @Column(unique=true)
-    private String email;
+    private String nombre;
+    @JsonView(Vista.Esencial.class)
+    private String descripcion;
+    @JsonView(Vista.Esencial.class)
+    private int duracion;
+    @JsonView(Vista.Esencial.class)
+    private int version;
+    @JsonView(Vista.Esencial.class)
+    private boolean borrado;
 
+    @ManyToOne
+    @JoinColumn(name="grupo_id", nullable=false)
     @JsonIgnore
-    private String password;
-    
-    @JsonView(Vista.Esencial.class)
-    private String role;
-    
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_grupo",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name="grupo_id")
-            
-    )
-    @JsonIgnore
-    private Set<Grupo> grupos = new HashSet<>();
+    private Grupo grupo;
 
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", email=" + email + ", role=" + role + ", grupos=" + grupos + '}';
+        return "Grupo{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", version=" + version + ", borrado=" + borrado + ", grupo="+ grupo.getNombre()+'}';
     }
     
     
