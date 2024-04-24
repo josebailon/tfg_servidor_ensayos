@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +28,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Cancion {
+public class Nota {
     
     @Id
     @JsonView(Vista.Esencial.class)
@@ -37,26 +36,25 @@ public class Cancion {
     @JsonView(Vista.Esencial.class)
     private String nombre;
     @JsonView(Vista.Esencial.class)
-    private String descripcion;
+    private String texto;
     @JsonView(Vista.Esencial.class)
-    private int duracion;
+    private String audio;
     @JsonView(Vista.Esencial.class)
     private int version;
     @JsonView(Vista.Esencial.class)
     private boolean borrado;
 
     @ManyToOne
-    @JoinColumn(name="grupo_id", nullable=false)
+    @JoinColumn(name="cancion_id", nullable=false)
     @JsonIgnore
-    private Grupo grupo;
+    private Cancion cancion;
 
-    @OneToMany(mappedBy="cancion")
-    @JsonView(Vista.Completa.class)
-    private Set<Nota> notas;
     @Override
     public String toString() {
-        return "Grupo{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", version=" + version + ", borrado=" + borrado + ", grupo="+ grupo.getNombre()+'}';
+        return "Nota{" + "id=" + id + ", nombre=" + nombre + ", texto=" + texto + ", audio=" + audio + ", version=" + version + ", borrado=" + borrado + ", cancion=" + cancion.getId() + '}';
     }
+
+    
     
     
 }//end UsuarioEntity

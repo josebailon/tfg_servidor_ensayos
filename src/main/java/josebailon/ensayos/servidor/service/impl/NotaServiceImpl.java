@@ -12,12 +12,15 @@ import java.util.Optional;
 import java.util.UUID;
 import josebailon.ensayos.servidor.model.entity.Cancion;
 import josebailon.ensayos.servidor.model.entity.Grupo;
+import josebailon.ensayos.servidor.model.entity.Nota;
 import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.repository.CancionRepository;
 import josebailon.ensayos.servidor.repository.GrupoRepository;
+import josebailon.ensayos.servidor.repository.NotaRepository;
 import josebailon.ensayos.servidor.repository.UsuarioRepository;
 import josebailon.ensayos.servidor.security.ResolutorPermisos;
 import josebailon.ensayos.servidor.service.ICancionService;
+import josebailon.ensayos.servidor.service.INotaService;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,30 +35,38 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 
-public class CancionServiceImpl implements ICancionService{
+public class NotaServiceImpl implements INotaService{
         private final ResolutorPermisos resolutorPermisos;
         private final UsuarioRepository repositorioUsuario;
         private final GrupoRepository repositorioGrupo;
         private final CancionRepository repositorioCancion;
+        private final NotaRepository repositorioNota;
 
     @Override
     @Transactional
-    public Cancion create(UUID idCancion, String nombre, String descripcion, int duracion, int version, UUID idGrupo, Long idUsuario)throws ResponseStatusException {
+    public Nota create(UUID idNota, String nombre, String texto, String audio, int version, UUID idCancion, Long idUsuario)throws ResponseStatusException {
             Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-            Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
-            if (usuario.isPresent() && grupo.isPresent()){
+            Optional<Cancion> cancion = repositorioCancion.findById(idCancion);
+            Grupo grupo=null;
+            if (cancion.isPresent())
+                grupo = cancion.get().getGrupo();
+            else
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
+            
+            if (usuario.isPresent() && cancion.isPresent()){
                 Usuario u = usuario.get();
-                Grupo g = grupo.get();
-                Cancion c = new Cancion();
-                if(resolutorPermisos.permitido(u,g)){
-                    c.setId(idCancion);
-                    c.setNombre(nombre);
-                    c.setDescripcion(descripcion);
-                    c.setDuracion(duracion);
-                    c.setVersion(version+1);
-                    c.setBorrado(false);
-                    c.setGrupo(g);
-                    return repositorioCancion.save(c);
+                Cancion c = cancion.get();
+                Grupo g = grupo;
+                Nota n = new Nota();
+                if(resolutorPermisos.permitido(u,c)){
+                    n.setId(idNota);
+                    n.setNombre(nombre);
+                    n.setTexto(texto);
+                    n.setAudio(audio);
+                    n.setVersion(version+1);
+                    n.setBorrado(false);
+                    n.setCancion(c);
+                    return repositorioNota.save(n);
                 }else{
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
                 }
@@ -66,22 +77,22 @@ public class CancionServiceImpl implements ICancionService{
     }
 
     @Override
-    public Cancion edit(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
+    public Nota edit(Nota request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Cancion> cancion = repositorioCancion.findById(request.getId());
-        if (usuario.isPresent() && cancion.isPresent() && !cancion.get().isBorrado()){
+        Optional<Nota> nota = repositorioNota.findById(request.getId());
+        if (usuario.isPresent() && nota.isPresent() && !nota.get().isBorrado()){
             Usuario u= usuario.get();
-            Cancion c= cancion.get();
-            if(resolutorPermisos.permitido(u,c)){
-                if (request.getVersion()==c.getVersion()){
-                    c.setVersion(request.getVersion()+1);
-                    c.setNombre(request.getNombre());
-                    c.setDescripcion(request.getDescripcion());
-                    c.setDuracion(request.getDuracion());
-                  return repositorioCancion.save(c);
+            Nota n= nota.get();
+            if(resolutorPermisos.permitido(u,n)){
+                if (request.getVersion()==n.getVersion()){
+                    n.setVersion(request.getVersion()+1);
+                    n.setNombre(request.getNombre());
+                    n.setTexto(request.getTexto());
+                    n.setAudio(request.getAudio());
+                  return repositorioNota.save(n);
                 }
                 else{
-                  throw new VersionIncorrectaException("",c);
+                  throw new VersionIncorrectaException("",n);
                 }
             }else{
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
@@ -93,20 +104,20 @@ public class CancionServiceImpl implements ICancionService{
 
    
     @Override
-    public Cancion delete(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
+    public Nota delete(Nota request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
          Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Cancion> cancion = repositorioCancion.findById(request.getId());
-        if (usuario.isPresent() && cancion.isPresent()&& !cancion.get().isBorrado()){
+        Optional<Nota> nota = repositorioNota.findById(request.getId());
+        if (usuario.isPresent() && nota.isPresent()&& !nota.get().isBorrado()){
             Usuario u= usuario.get();
-            Cancion c= cancion.get();
-            if(resolutorPermisos.permitido(u,c)){
-                if (request.getVersion()==c.getVersion()){
-                    c.setVersion(c.getVersion()+1);
-                    c.setBorrado(true);
-                  return repositorioCancion.save(c);
+            Nota n= nota.get();
+            if(resolutorPermisos.permitido(u,n)){
+                if (request.getVersion()==n.getVersion()){
+                    n.setVersion(n.getVersion()+1);
+                    n.setBorrado(true);
+                  return repositorioNota.save(n);
                 }
                 else{
-                  throw new VersionIncorrectaException("",c);
+                  throw new VersionIncorrectaException("",n);
                 }
             }else{
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
@@ -114,6 +125,8 @@ public class CancionServiceImpl implements ICancionService{
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
         }
+        
+        
     }
  
 }//end UserService

@@ -18,6 +18,7 @@ import josebailon.ensayos.servidor.model.entity.Grupo;
 import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.repository.GrupoRepository;
 import josebailon.ensayos.servidor.repository.UsuarioRepository;
+import josebailon.ensayos.servidor.security.ResolutorPermisos;
 import josebailon.ensayos.servidor.service.IGrupoService;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 
 public class GrupoServiceImpl implements IGrupoService{
-    
+        private final ResolutorPermisos resolutorPermisos;
         private final UsuarioRepository repositorioUsuario;
         private final GrupoRepository repositorioGrupo;
 
@@ -69,7 +70,7 @@ public class GrupoServiceImpl implements IGrupoService{
         if (usuario.isPresent() && grupo.isPresent() && !grupo.get().isBorrado()){
             Usuario u= usuario.get();
             Grupo g= grupo.get();
-            if(permitido(u,g)){
+            if(resolutorPermisos.permitido(u,g)){
                 if (request.getVersion()==g.getVersion()){
                     g.setVersion(request.getVersion()+1);
                     g.setNombre(request.getNombre());
@@ -95,7 +96,7 @@ public class GrupoServiceImpl implements IGrupoService{
         if (usuario.isPresent() && grupo.isPresent()&& !grupo.get().isBorrado()){
             Usuario u= usuario.get();
             Grupo g= grupo.get();
-            if(permitido(u,g)){
+            if(resolutorPermisos.permitido(u,g)){
                 if (request.getVersion()==g.getVersion()){
                     g.setVersion(g.getVersion()+1);
                     g.setBorrado(true);
@@ -135,7 +136,7 @@ public class GrupoServiceImpl implements IGrupoService{
                 System.out.println("No lo tiene");
                  return g;
             }            
-            if(permitido(u,g)){
+            if(resolutorPermisos.permitido(u,g)){
                     uDestino.getGrupos().remove(g);
                     g.getUsuarios().remove(uDestino);
                     g.setVersion(g.getVersion()+1);
@@ -162,7 +163,7 @@ public class GrupoServiceImpl implements IGrupoService{
             Usuario u= usuario.get();
             Grupo g= grupo.get();
             Usuario uDestino = usuarioDestino.get();
-            if(permitido(u,g)){
+            if(resolutorPermisos.permitido(u,g)){
                     uDestino.getGrupos().add(g);
                     repositorioUsuario.save(uDestino);
                     g.setVersion(g.getVersion()+1);
@@ -174,16 +175,7 @@ public class GrupoServiceImpl implements IGrupoService{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
         }    }
   
-    
-    /**
-     * Devuelve si el usuario u puede acceder al grupo
-     * @param u
-     * @param g
-     * @return 
-     */
-    public boolean permitido(Usuario u, Grupo g){
-        return u.getGrupos().contains(g);
-    }
+ 
 
 
 
