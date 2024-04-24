@@ -1,0 +1,57 @@
+/*
+LICENCIA JOSE JAVIER BO
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+Lista de paquetes:
+ */
+
+package josebailon.ensayos.servidor.controller;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import java.util.List;
+import java.util.UUID;
+import josebailon.ensayos.servidor.model.auth.LoginRequest;
+import josebailon.ensayos.servidor.model.auth.LoginResponse;
+import josebailon.ensayos.servidor.model.auth.RegistrarRequest;
+import josebailon.ensayos.servidor.model.entity.Grupo;
+import josebailon.ensayos.servidor.model.entity.Usuario;
+import josebailon.ensayos.servidor.model.vistas.Vista;
+import josebailon.ensayos.servidor.security.UserPrincipal;
+import josebailon.ensayos.servidor.service.IAuthService;
+import josebailon.ensayos.servidor.service.IGrupoService;
+import josebailon.ensayos.servidor.service.IUsuarioService;
+import josebailon.ensayos.servidor.service.exception.DuplicatedEmailException;
+import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+/**
+ *
+ * @author Jose Javier Bailon Ortiz
+ */
+@RestController
+@RequiredArgsConstructor
+public class UsuarioController {
+    
+    private final IUsuarioService usuarioService;
+    
+    //Anotaciones
+    //RequestBody transforma el cuerpo de la peticion http al objeto java
+    //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
+    @JsonView(Vista.Completa.class)
+    @GetMapping("/usuario/grupos")
+    public List<Grupo> gruposDeUsuario(@AuthenticationPrincipal UserPrincipal principal){
+        return usuarioService.getGruposCompletos(principal.getUserId());
+    }
+    
+}//end AuthController

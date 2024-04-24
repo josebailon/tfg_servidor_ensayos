@@ -6,7 +6,9 @@ Lista de paquetes:
  */
 package josebailon.ensayos.servidor.service;
 
+import java.util.List;
 import java.util.Optional;
+import josebailon.ensayos.servidor.model.entity.Grupo;
 import josebailon.ensayos.servidor.model.entity.Usuario;
 
 /**
@@ -16,4 +18,5 @@ import josebailon.ensayos.servidor.model.entity.Usuario;
 public interface IUsuarioService {
     public Optional<Usuario> findByEmail(String email);
     public Optional<Usuario> findById(Long idUsuario);
+    public List<Grupo> getGruposCompletos(Long idUsuario);
 }

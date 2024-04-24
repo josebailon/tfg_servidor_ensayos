@@ -7,12 +7,18 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.service.impl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import josebailon.ensayos.servidor.model.entity.Grupo;
 import josebailon.ensayos.servidor.model.entity.Usuario;
+import josebailon.ensayos.servidor.repository.GrupoRepository;
 import josebailon.ensayos.servidor.repository.UsuarioRepository;
 import josebailon.ensayos.servidor.service.IUsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -24,16 +30,27 @@ import org.springframework.stereotype.Service;
 
 public class UsuarioServiceImpl implements IUsuarioService{
     
-        private final UsuarioRepository repositorio;
-
+        private final UsuarioRepository repositorioUsuario;
+        private final GrupoRepository repositorioGrupo;
     
     
     public Optional<Usuario> findByEmail(String email){
-        return repositorio.findByEmail(email);
+        return repositorioUsuario.findByEmail(email);
     }
 
     @Override
     public Optional<Usuario> findById(Long idUsuario) {
-        return repositorio.findById(idUsuario);
+        return repositorioUsuario.findById(idUsuario);
     }
+
+    @Override
+    public List<Grupo> getGruposCompletos(Long idUsuario) {
+        Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
+        if (usuario.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
+        else
+            return usuario.get().getGrupos().stream().collect(Collectors.toList());
+    }
+    
+    
 }//end UserService
