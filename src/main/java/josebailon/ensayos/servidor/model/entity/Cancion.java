@@ -9,6 +9,7 @@ package josebailon.ensayos.servidor.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -42,20 +43,19 @@ public class Cancion {
     private int duracion;
     @JsonView(Vista.Esencial.class)
     private int version;
-    @JsonView(Vista.Esencial.class)
-    private boolean borrado;
+
 
     @ManyToOne
     @JoinColumn(name="grupo_id", nullable=false)
     @JsonIgnore
     private Grupo grupo;
 
-    @OneToMany(mappedBy="cancion")
+    @OneToMany(mappedBy="cancion", cascade = CascadeType.REMOVE)
     @JsonView(Vista.Completa.class)
     private Set<Nota> notas;
     @Override
     public String toString() {
-        return "Grupo{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", version=" + version + ", borrado=" + borrado + ", grupo="+ grupo.getNombre()+'}';
+        return "Grupo{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", version=" + version + ", grupo="+ grupo.getNombre()+'}';
     }
     
     

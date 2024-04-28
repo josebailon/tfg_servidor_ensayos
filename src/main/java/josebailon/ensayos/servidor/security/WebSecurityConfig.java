@@ -34,7 +34,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserPrincipalService userPrincipalService;
-    
+    private final UnauthorizedHandler unauthorizedHandler;
     
     /**
      * Configuracion de la seguridad
@@ -45,10 +45,11 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain applicationSecurity(HttpSecurity http) throws Exception{
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);//agregar filtro de token antes de la autenticacion
-        http.cors(cors -> cors.disable())//deshabilitar cors
+        return http.cors(cors -> cors.disable())//deshabilitar cors
             .csrf(csrf -> csrf.disable())//deshabilitar csrf
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));//establecer stateless para evitar sesiones
-        http.formLogin((fl) -> fl.disable())// desactivar formulario de login
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .formLogin((fl) -> fl.disable())// desactivar formulario de login
+            .exceptionHandling((t) -> t.authenticationEntryPoint(unauthorizedHandler))//handler de no autorizado
             .securityMatcher("/**")//asignar la configuracion a todas las rutas
             .authorizeHttpRequests(
                     (registro) -> registro.requestMatchers("/").permitAll()//permitir la raiz para todos
@@ -57,9 +58,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/auth/registrar").permitAll()
                     //.requestMatchers("/admin/**").hasRole("ADMIN") //seccion para administracion
                     .anyRequest().authenticated()//el resto de rutas solo permitirlas a los autenticados
-            );
-        return http.build();
-                 
+            ).build();
     }
     
     

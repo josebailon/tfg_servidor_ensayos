@@ -7,12 +7,15 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.security;
 
+import java.util.Optional;
+import josebailon.ensayos.servidor.model.entity.Audio;
 import josebailon.ensayos.servidor.model.entity.Cancion;
 import josebailon.ensayos.servidor.model.entity.Grupo;
 import josebailon.ensayos.servidor.model.entity.Nota;
 import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.repository.CancionRepository;
 import josebailon.ensayos.servidor.repository.GrupoRepository;
+import josebailon.ensayos.servidor.repository.NotaRepository;
 import josebailon.ensayos.servidor.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,7 +30,7 @@ public class ResolutorPermisos {
         private final UsuarioRepository repositorioUsuario;
         private final GrupoRepository repositorioGrupo;
         private final CancionRepository repositorioCancion;
-        private final CancionRepository repositorioNota;
+        private final NotaRepository repositorioNota;
     
         
     public boolean permitido(Usuario u, Grupo g){
@@ -40,5 +43,9 @@ public class ResolutorPermisos {
     
     public boolean permitido(Usuario u, Nota n){
         return permitido(u,n.getCancion());
+    }
+
+    public boolean permitido(Usuario u, Audio a) {
+        return permitido(u,a.getNota());
     }
 }//end ResolutorPermisos

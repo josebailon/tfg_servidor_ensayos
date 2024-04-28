@@ -9,31 +9,14 @@ package josebailon.ensayos.servidor.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.List;
-import java.util.UUID;
-import josebailon.ensayos.servidor.model.auth.LoginRequest;
-import josebailon.ensayos.servidor.model.auth.LoginResponse;
-import josebailon.ensayos.servidor.model.auth.RegistrarRequest;
 import josebailon.ensayos.servidor.model.entity.Grupo;
-import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.model.vistas.Vista;
 import josebailon.ensayos.servidor.security.UserPrincipal;
-import josebailon.ensayos.servidor.service.IAuthService;
-import josebailon.ensayos.servidor.service.IGrupoService;
 import josebailon.ensayos.servidor.service.IUsuarioService;
-import josebailon.ensayos.servidor.service.exception.DuplicatedEmailException;
-import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  *

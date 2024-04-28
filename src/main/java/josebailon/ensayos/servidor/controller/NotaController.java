@@ -9,14 +9,14 @@ package josebailon.ensayos.servidor.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.UUID;
-import josebailon.ensayos.servidor.model.entity.Cancion;
 import josebailon.ensayos.servidor.model.entity.Nota;
 import josebailon.ensayos.servidor.model.vistas.Vista;
 import josebailon.ensayos.servidor.security.UserPrincipal;
-import josebailon.ensayos.servidor.service.ICancionService;
 import josebailon.ensayos.servidor.service.INotaService;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,7 +42,7 @@ public class NotaController {
     @PostMapping("/nota/{idcancion}")
     @JsonView(Vista.Esencial.class)
     public Nota create(@RequestBody Nota request, @PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal){
-        return notaService.create(request.getId(), request.getNombre(), request.getTexto(),request.getAudio(), request.getVersion(),UUID.fromString(idcancion), principal.getUserId());
+        return notaService.create(request.getId(), request.getNombre(), request.getTexto(), request.getVersion(),UUID.fromString(idcancion), principal.getUserId());
     }
 
     @PutMapping("/nota")
@@ -54,8 +54,10 @@ public class NotaController {
     
     @DeleteMapping("/nota")
     @JsonView(Vista.Esencial.class)
-    public Nota delete(@RequestBody @Validated Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        return notaService.delete(request, principal.getUserId());
+    public ResponseEntity delete(@RequestBody @Validated Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        notaService.delete(request, principal.getUserId());
+        return ResponseEntity.status(HttpStatus.OK).build();
+        
     }
  
     

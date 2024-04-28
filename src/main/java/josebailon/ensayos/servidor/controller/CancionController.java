@@ -15,6 +15,8 @@ import josebailon.ensayos.servidor.security.UserPrincipal;
 import josebailon.ensayos.servidor.service.ICancionService;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,8 +52,9 @@ public class CancionController {
     }
     @DeleteMapping("/cancion")
     @JsonView(Vista.Esencial.class)
-    public Cancion delete(@RequestBody @Validated Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        return cancionService.delete(request, principal.getUserId());
+    public ResponseEntity delete(@RequestBody @Validated Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        cancionService.delete(request, principal.getUserId());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
  
     

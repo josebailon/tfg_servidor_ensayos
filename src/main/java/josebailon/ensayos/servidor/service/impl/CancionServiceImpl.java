@@ -53,7 +53,6 @@ public class CancionServiceImpl implements ICancionService{
                     c.setDescripcion(descripcion);
                     c.setDuracion(duracion);
                     c.setVersion(version+1);
-                    c.setBorrado(false);
                     c.setGrupo(g);
                     return repositorioCancion.save(c);
                 }else{
@@ -69,7 +68,7 @@ public class CancionServiceImpl implements ICancionService{
     public Cancion edit(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         Optional<Cancion> cancion = repositorioCancion.findById(request.getId());
-        if (usuario.isPresent() && cancion.isPresent() && !cancion.get().isBorrado()){
+        if (usuario.isPresent() && cancion.isPresent()){
             Usuario u= usuario.get();
             Cancion c= cancion.get();
             if(resolutorPermisos.permitido(u,c)){
@@ -93,17 +92,15 @@ public class CancionServiceImpl implements ICancionService{
 
    
     @Override
-    public Cancion delete(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
-         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
+    public void delete(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
+        Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         Optional<Cancion> cancion = repositorioCancion.findById(request.getId());
-        if (usuario.isPresent() && cancion.isPresent()&& !cancion.get().isBorrado()){
+        if (usuario.isPresent() && cancion.isPresent()){
             Usuario u= usuario.get();
             Cancion c= cancion.get();
             if(resolutorPermisos.permitido(u,c)){
                 if (request.getVersion()==c.getVersion()){
-                    c.setVersion(c.getVersion()+1);
-                    c.setBorrado(true);
-                  return repositorioCancion.save(c);
+                    repositorioCancion.deleteById(c.getId());
                 }
                 else{
                   throw new VersionIncorrectaException("",c);

@@ -8,6 +8,7 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -37,20 +38,19 @@ public class Grupo {
     private String descripcion;
     @JsonView(Vista.Esencial.class)
     private int version;
-    @JsonView(Vista.Esencial.class)
-    private boolean borrado;
+
 
     @ManyToMany(mappedBy = "grupos")
     @JsonView(Vista.Esencial.class)
     private Set<Usuario> usuarios = new HashSet<>();
 
-    @OneToMany(mappedBy="grupo")
+    @OneToMany(mappedBy="grupo", cascade = CascadeType.REMOVE)
     @JsonView(Vista.Completa.class)
     private Set<Cancion> canciones;
     
     @Override
     public String toString() {
-        return "Grupo{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", version=" + version + ", borrado=" + borrado + '}';
+        return "Grupo{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", version=" + version + '}';
     }
     
     

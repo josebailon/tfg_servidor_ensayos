@@ -51,7 +51,6 @@ public class GrupoServiceImpl implements IGrupoService{
                 g.setNombre(nombre);
                 g.setDescripcion(descripcion);
                 g.setVersion(version+1);
-                g.setBorrado(false);
                 g.getUsuarios().add(usuario.get());
                 u.getGrupos().add(g);
                 repositorioGrupo.save(g);
@@ -67,7 +66,7 @@ public class GrupoServiceImpl implements IGrupoService{
     public Grupo edit(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         Optional<Grupo> grupo = repositorioGrupo.findById(request.getId());
-        if (usuario.isPresent() && grupo.isPresent() && !grupo.get().isBorrado()){
+        if (usuario.isPresent() && grupo.isPresent()){
             Usuario u= usuario.get();
             Grupo g= grupo.get();
             if(resolutorPermisos.permitido(u,g)){
@@ -90,17 +89,15 @@ public class GrupoServiceImpl implements IGrupoService{
 
    
     @Override
-    public Grupo delete(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
+    public void delete(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
          Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         Optional<Grupo> grupo = repositorioGrupo.findById(request.getId());
-        if (usuario.isPresent() && grupo.isPresent()&& !grupo.get().isBorrado()){
+        if (usuario.isPresent() && grupo.isPresent()){
             Usuario u= usuario.get();
             Grupo g= grupo.get();
             if(resolutorPermisos.permitido(u,g)){
                 if (request.getVersion()==g.getVersion()){
-                    g.setVersion(g.getVersion()+1);
-                    g.setBorrado(true);
-                  return repositorioGrupo.save(g);
+                     repositorioGrupo.deleteById(g.getId());
                 }
                 else{
                   throw new VersionIncorrectaException("",g);
@@ -126,7 +123,7 @@ public class GrupoServiceImpl implements IGrupoService{
         Optional<Usuario> usuarioDestino = repositorioUsuario.findByEmail(emailUsuario);
          Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
          Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
-        if (usuarioDestino.isPresent() && usuario.isPresent() && grupo.isPresent() && !grupo.get().isBorrado()){
+        if (usuarioDestino.isPresent() && usuario.isPresent() && grupo.isPresent()){
             Usuario u= usuario.get();
             Grupo g= grupo.get();
             Usuario uDestino = usuarioDestino.get();
@@ -159,7 +156,7 @@ public class GrupoServiceImpl implements IGrupoService{
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         
         Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
-        if (usuarioDestino.isPresent() && usuario.isPresent() && grupo.isPresent() && !grupo.get().isBorrado()){
+        if (usuarioDestino.isPresent() && usuario.isPresent() && grupo.isPresent()){
             Usuario u= usuario.get();
             Grupo g= grupo.get();
             Usuario uDestino = usuarioDestino.get();

@@ -9,12 +9,14 @@ package josebailon.ensayos.servidor.service.exception;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import josebailon.ensayos.servidor.model.vistas.Vista;
+import org.hibernate.NonUniqueObjectException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -41,6 +43,23 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<Object>(ex.getValor(),HttpStatus.CONFLICT);
 
     }
+    @ExceptionHandler(NonUniqueObjectException.class)
+     @RequestMapping(produces = "application/json")
+    public ResponseEntity<Object> handleNonUniqueObjectException(final NonUniqueObjectException ex){
+        return new ResponseEntity<Object>(ex.getMessage(),HttpStatus.CONFLICT);
 
+    }
     
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @RequestMapping(produces = "application/json")
+    @JsonView(Vista.Esencial.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(final HttpMessageNotReadableException ex){
+        return new ResponseEntity<Object>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    @RequestMapping(produces = "application/json")
+    public ResponseEntity<Object> handleMissingServletRequestPartException(final MissingServletRequestPartException ex){
+        return new ResponseEntity<Object>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }        
 }//end GlobalExceptionHandler

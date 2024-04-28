@@ -9,18 +9,13 @@ package josebailon.ensayos.servidor.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.UUID;
-import josebailon.ensayos.servidor.model.auth.LoginRequest;
-import josebailon.ensayos.servidor.model.auth.LoginResponse;
-import josebailon.ensayos.servidor.model.auth.RegistrarRequest;
 import josebailon.ensayos.servidor.model.entity.Grupo;
-import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.model.vistas.Vista;
 import josebailon.ensayos.servidor.security.UserPrincipal;
-import josebailon.ensayos.servidor.service.IAuthService;
 import josebailon.ensayos.servidor.service.IGrupoService;
-import josebailon.ensayos.servidor.service.exception.DuplicatedEmailException;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -57,8 +52,9 @@ public class GrupoController {
     }
     @JsonView(Vista.Esencial.class)
     @DeleteMapping("/grupo")
-    public Grupo delete(@RequestBody @Validated Grupo request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        return grupoService.delete(request, principal.getUserId());
+    public ResponseEntity delete(@RequestBody @Validated Grupo request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        grupoService.delete(request, principal.getUserId());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
     @JsonView(Vista.Esencial.class)
     @PostMapping("/grupo/{idgrupo}/{emailusuario}")

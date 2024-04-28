@@ -7,18 +7,20 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.service;
 
 import java.util.UUID;
+import josebailon.ensayos.servidor.model.entity.Audio;
 import josebailon.ensayos.servidor.model.entity.Nota;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
  * @author Jose Javier Bailon Ortiz
  */
-public interface INotaService {
-    public Nota create(   UUID idNota,String nombre, String texto, int version, UUID idCancion, Long idUsuario)throws ResponseStatusException;
+public interface IAudioService {
+    public Audio create(   UUID idAudio, int version, MultipartFile archivo, Long idUsuario)throws ResponseStatusException;
 
-    public Nota edit(Nota request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
+    public Audio edit(Audio audio, MultipartFile archivo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
-    public void delete(Nota request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
+    public void delete(Audio request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
 }

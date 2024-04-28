@@ -20,5 +20,5 @@ public interface ICancionService {
 
     public Cancion edit(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
-    public Cancion delete(Cancion request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
+    public void delete(Cancion request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
 }

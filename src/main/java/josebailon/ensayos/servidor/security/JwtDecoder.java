@@ -23,6 +23,12 @@ public class JwtDecoder {
     private final JwtPropiedades propiedades;
     
     public DecodedJWT decode(String token){
-        return JWT.require(Algorithm.HMAC256(propiedades.getSecretKey())).build().verify(token);
+        try{
+            return JWT.require(Algorithm.HMAC256(propiedades.getSecretKey())).build().verify(token);
+        }catch(Exception ex)
+        {
+            //null si no se ha podido procesar el token y decodificarlo
+            return null;
+        }
     }
 }//end JwtDecoder
