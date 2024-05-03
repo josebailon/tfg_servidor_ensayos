@@ -15,14 +15,24 @@ import org.springframework.security.core.GrantedAuthority;
  *
  * @author Jose Javier Bailon Ortiz
  */
+
 public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToken {
 
     private final UserPrincipal principal;
     
-    public UserPrincipalAuthenticationToken(UserPrincipal principal) {
+    public UserPrincipalAuthenticationToken(UserPrincipal principal, UserPrincipalService userPrincipalService) {
         super(principal.getAuthorities());
         this.principal=principal;
-        this.setAuthenticated(true);
+        boolean autenticado =false;
+        //si no puede cargar el usuario entonces salta la excepcion y no se autentica
+        try{
+            userPrincipalService.loadUserByUsername(principal.getEmail());
+            autenticado=true;
+        }catch(Exception ex){
+            System.out.println("Usuario no existente, cancelando autorizacion");
+        }
+        //definicion de la autenticacion
+        this.setAuthenticated(autenticado);
     }
 
     @Override

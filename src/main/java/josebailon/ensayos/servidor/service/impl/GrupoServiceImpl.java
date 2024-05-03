@@ -44,7 +44,13 @@ public class GrupoServiceImpl implements IGrupoService{
     @Transactional
     public Grupo create(UUID idGrupo, String nombre, String descripcion, int version, Long idUsuario) {
             Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
+            Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
+            //grupo ya existente
+            if (grupo.isPresent())
+                throw new ResponseStatusException(HttpStatus.CONFLICT); 
+            
             if (usuario.isPresent()){
+                
                 Usuario u = usuario.get();
                 Grupo g = new Grupo();
                 g.setId(idGrupo);
@@ -80,7 +86,7 @@ public class GrupoServiceImpl implements IGrupoService{
                   throw new VersionIncorrectaException("",g);
                 }
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
@@ -103,7 +109,7 @@ public class GrupoServiceImpl implements IGrupoService{
                   throw new VersionIncorrectaException("",g);
                 }
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
@@ -142,7 +148,7 @@ public class GrupoServiceImpl implements IGrupoService{
                     
                   return g;
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
@@ -166,7 +172,7 @@ public class GrupoServiceImpl implements IGrupoService{
                     g.setVersion(g.getVersion()+1);
                   return repositorioGrupo.save(g);
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 

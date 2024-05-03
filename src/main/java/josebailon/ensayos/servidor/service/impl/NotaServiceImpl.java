@@ -60,7 +60,7 @@ public class NotaServiceImpl implements INotaService{
                     n.setCancion(c);
                     return repositorioNota.save(n);
                 }else{
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
                 }
             }
             else {
@@ -87,7 +87,7 @@ public class NotaServiceImpl implements INotaService{
                   throw new VersionIncorrectaException("",n);
                 }
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
@@ -110,7 +110,7 @@ public class NotaServiceImpl implements INotaService{
                   throw new VersionIncorrectaException("",n);
                 }
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 

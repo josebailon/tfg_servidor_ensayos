@@ -56,7 +56,7 @@ public class CancionServiceImpl implements ICancionService{
                     c.setGrupo(g);
                     return repositorioCancion.save(c);
                 }else{
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
                 }
             }
             else {
@@ -83,7 +83,7 @@ public class CancionServiceImpl implements ICancionService{
                   throw new VersionIncorrectaException("",c);
                 }
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
@@ -106,7 +106,7 @@ public class CancionServiceImpl implements ICancionService{
                   throw new VersionIncorrectaException("",c);
                 }
             }else{
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN); 
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 

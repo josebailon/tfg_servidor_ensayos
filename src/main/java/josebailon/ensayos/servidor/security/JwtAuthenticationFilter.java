@@ -28,13 +28,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
     private final JwtDecoder jwtDecoder;
     private final JwtToUserPrincipalConverter jwtToUserDetallesconverter;
-    
+    private final UserPrincipalService userPrincipalService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         extraerTokenDePeticion(request)
                 .map(str -> jwtDecoder.decode(str))// decodificar el token
                 .map(token->jwtToUserDetallesconverter.convertir(token)) // extraer userdetalles
-                .map(userDetalles -> new UserPrincipalAuthenticationToken(userDetalles)) //crear userdetalles con su autenticacion
+                .map(userDetalles -> new UserPrincipalAuthenticationToken(userDetalles,userPrincipalService)) //crear userdetalles con su autenticacion
                 .ifPresent(authentication -> SecurityContextHolder.getContext().setAuthentication(authentication));// incluir autenticador en el contexto
         filterChain.doFilter(request, response);
     }

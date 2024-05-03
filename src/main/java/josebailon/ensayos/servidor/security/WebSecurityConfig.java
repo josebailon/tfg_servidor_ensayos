@@ -53,7 +53,6 @@ public class WebSecurityConfig {
             .securityMatcher("/**")//asignar la configuracion a todas las rutas
             .authorizeHttpRequests(
                     (registro) -> registro.requestMatchers("/").permitAll()//permitir la raiz para todos
-                    .requestMatchers("/otro").permitAll()//permitir para todos la ruta de autorizacion
                     .requestMatchers("/auth/login").permitAll()//permitir para todos la ruta de autorizacion
                     .requestMatchers("/auth/registrar").permitAll()
                     //.requestMatchers("/admin/**").hasRole("ADMIN") //seccion para administracion

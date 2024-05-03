@@ -10,6 +10,8 @@ import java.util.UUID;
 import josebailon.ensayos.servidor.model.entity.Audio;
 import josebailon.ensayos.servidor.model.entity.Nota;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,4 +25,6 @@ public interface IAudioService {
     public Audio edit(Audio audio, MultipartFile archivo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
     public void delete(Audio request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
+
+    public ResponseEntity<Resource> get(UUID idAudio, Long idUsuario);
 }

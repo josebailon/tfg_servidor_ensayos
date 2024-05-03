@@ -8,6 +8,7 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import josebailon.ensayos.servidor.model.entity.Nota;
 import josebailon.ensayos.servidor.model.vistas.Vista;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,6 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Jose Javier Bailon Ortiz
  */
 @RestController
+@RequestMapping("/nota")
 @RequiredArgsConstructor
 public class NotaController {
     
@@ -39,22 +42,22 @@ public class NotaController {
     //Anotaciones
     //RequestBody transforma el cuerpo de la peticion http al objeto java
     //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
-    @PostMapping("/nota/{idcancion}")
+    @PostMapping("/{idcancion}")
     @JsonView(Vista.Esencial.class)
-    public Nota create(@RequestBody Nota request, @PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal){
+    public Nota create(@RequestBody @Valid Nota request, @PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal){
         return notaService.create(request.getId(), request.getNombre(), request.getTexto(), request.getVersion(),UUID.fromString(idcancion), principal.getUserId());
     }
 
-    @PutMapping("/nota")
+    @PutMapping()
     @JsonView(Vista.Esencial.class)
-    public Nota edit(@RequestBody @Validated Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+    public Nota edit(@RequestBody @Valid Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         return notaService.edit(request, principal.getUserId());
     }
     
     
-    @DeleteMapping("/nota")
+    @DeleteMapping()
     @JsonView(Vista.Esencial.class)
-    public ResponseEntity delete(@RequestBody @Validated Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+    public ResponseEntity delete(@RequestBody @Valid Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         notaService.delete(request, principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
         

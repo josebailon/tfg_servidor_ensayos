@@ -66,6 +66,7 @@ public class AuthServiceImpl implements IAuthService{
         if (!repositorio.findByEmail(email).isEmpty()) {
             throw new DuplicatedEmailException(String.format("El email: %s ya está ocupado", email));
         }
+   
         
         Usuario usuario = new Usuario();
         usuario.setEmail(email);

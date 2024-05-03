@@ -16,6 +16,7 @@ import josebailon.ensayos.servidor.service.IUsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Jose Javier Bailon Ortiz
  */
 @RestController
+@RequestMapping("/usuario")
 @RequiredArgsConstructor
 public class UsuarioController {
     
@@ -32,7 +34,7 @@ public class UsuarioController {
     //RequestBody transforma el cuerpo de la peticion http al objeto java
     //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
     @JsonView(Vista.Completa.class)
-    @GetMapping("/usuario/grupos")
+    @GetMapping("/grupos")
     public List<Grupo> gruposDeUsuario(@AuthenticationPrincipal UserPrincipal principal){
         return usuarioService.getGruposCompletos(principal.getUserId());
     }

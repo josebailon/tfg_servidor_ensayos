@@ -17,6 +17,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 import josebailon.ensayos.servidor.model.vistas.Vista;
@@ -35,12 +39,16 @@ public class Usuario {
     @Id
     @JsonView(Vista.Esencial.class)
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @NotNull
     private Long id;
     
     @JsonView(Vista.Esencial.class)
     @Column(unique=true)
+    @NotEmpty
     private String email;
 
+
+    @NotEmpty
     @JsonIgnore
     private String password;
     

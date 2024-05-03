@@ -8,6 +8,7 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import josebailon.ensayos.servidor.model.entity.Cancion;
 import josebailon.ensayos.servidor.model.vistas.Vista;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,6 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Jose Javier Bailon Ortiz
  */
 @RestController
+@RequestMapping("/cancion")
 @RequiredArgsConstructor
 public class CancionController {
     
@@ -39,20 +42,20 @@ public class CancionController {
     //Anotaciones
     //RequestBody transforma el cuerpo de la peticion http al objeto java
     //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
-    @PostMapping("/cancion/{idgrupo}")
+    @PostMapping("/{idgrupo}")
     @JsonView(Vista.Esencial.class)
-    public Cancion create(@RequestBody Cancion request, @PathVariable String idgrupo, @AuthenticationPrincipal UserPrincipal principal){
+    public Cancion create(@RequestBody @Valid Cancion request, @PathVariable String idgrupo, @AuthenticationPrincipal UserPrincipal principal){
         return cancionService.create(request.getId(), request.getNombre(), request.getDescripcion(),request.getDuracion(), request.getVersion(),UUID.fromString(idgrupo), principal.getUserId());
     }
 
-    @PutMapping("/cancion")
+    @PutMapping()
     @JsonView(Vista.Esencial.class)
-    public Cancion edit(@RequestBody @Validated Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+    public Cancion edit(@RequestBody @Valid Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         return cancionService.edit(request, principal.getUserId());
     }
-    @DeleteMapping("/cancion")
+    @DeleteMapping()
     @JsonView(Vista.Esencial.class)
-    public ResponseEntity delete(@RequestBody @Validated Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+    public ResponseEntity delete(@RequestBody @Valid Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         cancionService.delete(request, principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }

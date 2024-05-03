@@ -17,6 +17,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -35,12 +37,16 @@ public class Nota {
     
     @Id
     @JsonView(Vista.Esencial.class)
+    @NotNull
     private UUID id;
     @JsonView(Vista.Esencial.class)
+    @NotEmpty
     private String nombre;
     @JsonView(Vista.Esencial.class)
+    @NotNull
     private String texto;
     @JsonView(Vista.Esencial.class)
+    @NotNull
     private int version;
 
     

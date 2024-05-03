@@ -1,0 +1,1191 @@
+{
+	"info": {
+		"_postman_id": "55368d14-f5bc-4de4-b288-b5917de77bde",
+		"name": "Pruebas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18050078"
+	},
+	"item": [
+		{
+			"name": "Acceso a zona privada con token mal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "token mal",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/usuario/grupos",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"usuario",
+						"grupos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login correcto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene token\", ()=>{\r",
+							"    pm.expect(response.accessToken).not.to.eql(undefined);\r",
+							"});\r",
+							"\r",
+							"//redefinir el token de acceso\r",
+							"pm.globals.set(\"token\", response.accessToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test1@test.com\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login incorrecto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"noexisto@test.com\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registro correcto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene usuario\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.email).not.to.eql(undefined);\r",
+							"    pm.expect(response.role).eql(\"usuario\");\r",
+							"});\r",
+							"//redefinir el token de acceso\r",
+							"pm.globals.set(\"usuariosecundario\", response.email);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/registrar",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login correcto secundario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene token\", ()=>{\r",
+							"    pm.expect(response.accessToken).not.to.eql(undefined);\r",
+							"});\r",
+							"\r",
+							"//redefinir el token de acceso\r",
+							"pm.globals.set(\"tokensecundario\", response.accessToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{usuariosecundario}}\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registro usuario existente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const body = pm.response.stream.toString('utf-8');\r",
+							"\r",
+							"pm.test(\"Mensaje de email duplicado\", ()=>{\r",
+							"    pm.expect(body).eql(\"El email: test1@test.com ya está ocupado\");\r",
+							"});\r",
+							"\r",
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test1@test.com\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/registrar",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear grupo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene grupo\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(1);\r",
+							"    pm.expect(response.usuarios[0].email).to.eql(\"test1@test.com\");\r",
+							"});\r",
+							"\r",
+							"//redefinir el uuid de grupo\r",
+							"pm.globals.set(\"uuidgrupo\", response.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"Grupo {{$randomProductName}}\",\r\n    \"descripcion\": \"{{$randomJobDescriptor}}\",\r\n    \"version\":0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear grupo repetido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"Grupo {{$randomProductName}}\",\r\n    \"descripcion\": \"{{$randomJobDescriptor}}\",\r\n    \"version\":0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar grupo bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene grupo\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(2);\r",
+							"    pm.expect(response.usuarios[0].email).to.eql(\"test1@test.com\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar grupo con version mala",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene grupo\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(2);\r",
+							"    pm.expect(response.usuarios[0].email).to.eql(\"test1@test.com\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar grupo que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar grupo que no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/grupo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzEzODkzODA3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.Zf1oT3Z-_gK9LF2eyrMb8ux8SXWMsdZCPU-I127lpWQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-fed225ee19f6\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 2\r\n \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/grupo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/grupo/:grupoId/test1@test.com",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grupo/0cd422c8-4f22-44f9-a965-fed225ee19f6/test1@test.com",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo",
+						"0cd422c8-4f22-44f9-a965-fed225ee19f6",
+						"test1@test.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/grupo/0cd422c8-4f22-44f9-a965-fed225ee19f6/test1@test.com",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzEzOTgwMzk3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.Mp25EjA5oGjYaKJMDFncv_qHjk8R2hRNEWqUQJD4uKE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/grupo/0cd422c8-4f22-44f9-a965-fed225ee19f6/test1@test.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"grupo",
+						"0cd422c8-4f22-44f9-a965-fed225ee19f6",
+						"test1@test.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/cancion/0cd422c8-4f22-44f9-a965-aaaaaaaaaaaa",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa\",\r\n    \"nombre\": \"Nueva Cancion\",\r\n    \"descripcion\": \"descripcion cancion\",\r\n    \"duracion\":1000,\r\n    \"version\":0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cancion/0cd422c8-4f22-44f9-a965-aaaaaaaaaaaa",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cancion",
+						"0cd422c8-4f22-44f9-a965-aaaaaaaaaaaa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/cancion",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzEzOTgwMzk3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.Mp25EjA5oGjYaKJMDFncv_qHjk8R2hRNEWqUQJD4uKE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa\",\r\n    \"nombre\": \"Cancion\",\r\n    \"descripcion\": \"descripcion de la cancion\",\r\n    \"duracion\": 5000,\r\n    \"version\": 1,\r\n    \"borrado\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cancion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cancion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/cancion",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzE0Mzc5ODE5LCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.pU0oPAQrgk617HZ8v-JO-Zky_XDoVgApjVzl_zLmZ1I",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa\",\r\n    \"nombre\": \"Cancion\",\r\n    \"descripcion\": \"descripcion de la cancion\",\r\n    \"duracion\": 5000,\r\n    \"version\": 3,\r\n    \"borrado\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cancion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cancion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/nota/0cd422c8-4f22-44f9-a965-caaaaaaaaaaa",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\r\n    \"nombre\": \"Segunda nota\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\":0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/nota/0cd422c8-4f22-44f9-a965-caaaaaaaaaaa",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nota",
+						"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/nota",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzE0MDY0NzUzLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.X9JvP_fvzr0h3XNGIz-K4hLqFGV9UmJF9jf5IB7Om5g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 1,\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/nota",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/nota",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/nota",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/audio",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQ2MDMyMzg5LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.FmPIGON90sIeA87otrwfiARmK9pM2yl9NmQQ4SF_Nnk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "datos",
+							"value": "{\"id\":\"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\"version\":0}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "archivo",
+							"type": "file",
+							"src": "/G:/temp/almacenamiento/micosa.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/audio",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/audio",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQ2MDMyMzg5LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.FmPIGON90sIeA87otrwfiARmK9pM2yl9NmQQ4SF_Nnk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "datos",
+							"value": "{\"id\":\"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\"version\":1}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/G:/temp/almacenamiento/sample-3s.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/audio",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/audio",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\"version\":1}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/audio",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/audio/0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQ2MDMyMzg5LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.FmPIGON90sIeA87otrwfiARmK9pM2yl9NmQQ4SF_Nnk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/audio/0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audio",
+						"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/usuario/grupos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/usuario/grupos",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"usuario",
+						"grupos"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -7,6 +7,7 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.model.audio;
 
+import jakarta.validation.constraints.NotEmpty;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,8 @@ import lombok.Getter;
 @Getter //autogenerar getters
 @Builder //autogenerar constructor
 public class AudioRequest {
+    @NotEmpty
     private UUID notaId;
+    @NotEmpty
     private int notaVersion;
 }//end LoginRequest
