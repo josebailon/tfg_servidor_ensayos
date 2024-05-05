@@ -55,13 +55,7 @@ public class Usuario {
     @JsonView(Vista.Esencial.class)
     private String role;
     
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_grupo",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name="grupo_id")
-            
-    )
+    @ManyToMany(mappedBy = "usuarios")
     @JsonIgnore
     private Set<Grupo> grupos = new HashSet<>();
 

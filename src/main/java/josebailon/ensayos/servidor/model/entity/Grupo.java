@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotEmpty;
@@ -46,11 +48,18 @@ public class Grupo {
     private int version;
 
 
-    @ManyToMany(mappedBy = "grupos")
+    
+        @ManyToMany
+    @JoinTable(
+            name = "usuario_grupo",
+            joinColumns = @JoinColumn(name="grupo_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+            
+    )
     @JsonView(Vista.Esencial.class)
     private Set<Usuario> usuarios = new HashSet<>();
 
-    @OneToMany(mappedBy="grupo", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="grupo", cascade = CascadeType.ALL)
     @JsonView(Vista.Completa.class)
     private Set<Cancion> canciones;
     

@@ -1,0 +1,57 @@
+{
+	"id": "4fda239d-c560-46ec-8d39-f7844a098bf2",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "http://192.168.1.53:8080",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQ2MjkyNDIwLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.5lP_69iypvpX3fXA_7Pygtg62n7Sj0zKjdK5OpZfWmc",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "usuariosecundario",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "tokensecundario",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "uuidgrupo",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "uuidcancion",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "uuidnota",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "nombreaudio",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2024-05-04T20:10:46.869Z",
+	"_postman_exported_using": "Postman/11.0.6"
+}

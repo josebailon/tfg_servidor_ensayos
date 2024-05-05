@@ -59,11 +59,17 @@ public class GrupoController {
         grupoService.delete(request, principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+    
+    //Agregar usuario a gruo
     @JsonView(Vista.Esencial.class)
     @PostMapping("/{idgrupo}/{emailusuario}")
     public Grupo addUsuario(@PathVariable String idgrupo, @PathVariable String emailusuario, @AuthenticationPrincipal UserPrincipal principal){
+        System.out.println(idgrupo+" "+emailusuario);
+                
         return grupoService.addUsuario(UUID.fromString(idgrupo), emailusuario,principal.getUserId());
     }
+    
+    //Sacar usuario de grupo
     @JsonView(Vista.Esencial.class)
     @DeleteMapping("/{idgrupo}/{emailusuario}")
     public Grupo deleteUsuario(@PathVariable String idgrupo, @PathVariable String emailusuario, @AuthenticationPrincipal UserPrincipal principal){

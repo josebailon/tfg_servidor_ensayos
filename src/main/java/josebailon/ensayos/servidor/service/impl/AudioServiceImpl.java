@@ -50,16 +50,28 @@ public class AudioServiceImpl implements IAudioService {
 
     @Override
     @Transactional
-    public Audio create(UUID idAudio, int version, MultipartFile archivo, Long idUsuario) throws ResponseStatusException {
+    public Audio create(UUID idAudio, int version, MultipartFile archivo, Long idUsuario)  throws ResponseStatusException, VersionIncorrectaException {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         Optional<Nota> nota = repositorioNota.findById(idAudio);
-
+        Optional<Audio> audio = repositorioAudio.findById(idAudio);
         if (usuario.isPresent()) {
 
             Usuario u = usuario.get();
             Nota n = nota.get();
             Audio a = new Audio();
             if (resolutorPermisos.permitido(u, n)) {
+                
+                //diferir a update si ya existe
+                if (audio.isPresent()){
+                    Audio audioDiferido= new Audio();
+                    audioDiferido.setId(idAudio);
+                    audioDiferido.setNombreArchivo("");
+                    audioDiferido.setNota(n);
+                    audioDiferido.setVersion(version);
+                    return this.edit(audioDiferido, archivo, idUsuario);
+                }
+                
+                
                 String nombreArchivo;
                 try {
                     nombreArchivo = this.guardaArchivo(archivo);

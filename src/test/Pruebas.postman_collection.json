@@ -63,6 +63,59 @@
 			"response": []
 		},
 		{
+			"name": "Registro inicial",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene usuario\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.email).not.to.eql(undefined);\r",
+							"    pm.expect(response.role).eql(\"usuario\");\r",
+							"});\r",
+							"//redefinir el token de acceso\r",
+							"pm.globals.set(\"usuariosecundario\", response.email);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test1@test.com\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/registrar",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Login correcto",
 			"event": [
 				{
@@ -313,7 +366,7 @@
 			"response": []
 		},
 		{
-			"name": "Crear grupo",
+			"name": "GRUPO crear",
 			"event": [
 				{
 					"listen": "test",
@@ -375,7 +428,276 @@
 			"response": []
 		},
 		{
-			"name": "Crear grupo repetido",
+			"name": "Agregar usuario a grupo que no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grupo/{{uuidgrupo}}/{{usuariosecundario}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo",
+						"{{uuidgrupo}}",
+						"{{usuariosecundario}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar usuario a grupo bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Usuario agregado a grupo\", ()=>{\r",
+							"    let encontrado=false;\r",
+							"    for(usu in response.usuarios){\r",
+							"        if (usu.email===pm.globals.usuariosecundario)\r",
+							"            encontrado=true;\r",
+							"    }\r",
+							"    pm.expect(encontrado).to.eql(true);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grupo/{{uuidgrupo}}/{{usuariosecundario}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo",
+						"{{uuidgrupo}}",
+						"{{usuariosecundario}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar usuario que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grupo/{{uuidgrupo}}/{{$randomEmail}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo",
+						"{{uuidgrupo}}",
+						"{{$randomEmail}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sacar usuario de grupo bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grupo/{{uuidgrupo}}/{{usuariosecundario}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo",
+						"{{uuidgrupo}}",
+						"{{usuariosecundario}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Intentar dejar el grupo sin usuarios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grupo/{{uuidgrupo}}/test1@test.com",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo",
+						"{{uuidgrupo}}",
+						"test1@test.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sacar usuario de grupo que no le pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grupo/{{uuidgrupo}}/{{usuariosecundario}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo",
+						"{{uuidgrupo}}",
+						"{{usuariosecundario}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GRUPO Crear repetido",
 			"event": [
 				{
 					"listen": "test",
@@ -426,7 +748,7 @@
 			"response": []
 		},
 		{
-			"name": "Editar grupo bien",
+			"name": "GRUPO Editar bien",
 			"event": [
 				{
 					"listen": "test",
@@ -441,7 +763,7 @@
 							"    pm.expect(response.id).not.to.eql(undefined);\r",
 							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
 							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
-							"    pm.expect(response.version).to.eql(2);\r",
+							"    pm.expect(response.version).to.eql(4);\r",
 							"    pm.expect(response.usuarios[0].email).to.eql(\"test1@test.com\");\r",
 							"});\r",
 							""
@@ -466,7 +788,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1\r\n\r\n}",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 3\r\n\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -486,7 +808,7 @@
 			"response": []
 		},
 		{
-			"name": "Editar grupo con version mala",
+			"name": "GRUPO Editar version mala",
 			"event": [
 				{
 					"listen": "test",
@@ -501,7 +823,7 @@
 							"    pm.expect(response.id).not.to.eql(undefined);\r",
 							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
 							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
-							"    pm.expect(response.version).to.eql(2);\r",
+							"    pm.expect(response.version).to.eql(4);\r",
 							"    pm.expect(response.usuarios[0].email).to.eql(\"test1@test.com\");\r",
 							"});\r",
 							""
@@ -546,7 +868,7 @@
 			"response": []
 		},
 		{
-			"name": "Editar grupo que no existe",
+			"name": "GRUPO Editar uno que no existe",
 			"event": [
 				{
 					"listen": "test",
@@ -597,7 +919,7 @@
 			"response": []
 		},
 		{
-			"name": "Editar grupo que no pertenece",
+			"name": "GRUPO Editar uno que no pertenece",
 			"event": [
 				{
 					"listen": "test",
@@ -649,45 +971,33 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/grupo",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzEzODkzODA3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.Zf1oT3Z-_gK9LF2eyrMb8ux8SXWMsdZCPU-I127lpWQ",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-fed225ee19f6\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 2\r\n \r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+			"name": "CANCION crear",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene cancion\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.duracion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(1);\r",
+							"});\r",
+							"\r",
+							"//redefinir el uuid de grupo\r",
+							"pm.globals.set(\"uuidcancion\", response.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/grupo",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"grupo"
-					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:8080/grupo/:grupoId/test1@test.com",
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -701,99 +1011,60 @@
 				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"Nueva Cancion\",\r\n    \"descripcion\": \"descripcion cancion\",\r\n    \"duracion\":1000,\r\n    \"version\":0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "{{baseUrl}}/grupo/0cd422c8-4f22-44f9-a965-fed225ee19f6/test1@test.com",
+					"raw": "{{baseUrl}}/cancion/{{uuidgrupo}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"grupo",
-						"0cd422c8-4f22-44f9-a965-fed225ee19f6",
-						"test1@test.com"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:8080/grupo/0cd422c8-4f22-44f9-a965-fed225ee19f6/test1@test.com",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzEzOTgwMzk3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.Mp25EjA5oGjYaKJMDFncv_qHjk8R2hRNEWqUQJD4uKE",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/grupo/0cd422c8-4f22-44f9-a965-fed225ee19f6/test1@test.com",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"grupo",
-						"0cd422c8-4f22-44f9-a965-fed225ee19f6",
-						"test1@test.com"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:8080/cancion/0cd422c8-4f22-44f9-a965-aaaaaaaaaaaa",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa\",\r\n    \"nombre\": \"Nueva Cancion\",\r\n    \"descripcion\": \"descripcion cancion\",\r\n    \"duracion\":1000,\r\n    \"version\":0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/cancion/0cd422c8-4f22-44f9-a965-aaaaaaaaaaaa",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
 						"cancion",
-						"0cd422c8-4f22-44f9-a965-aaaaaaaaaaaa"
+						"{{uuidgrupo}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/cancion",
+			"name": "CANCION Editar bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene el grupo cambiado\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).to.eql(\"Cancion cambiada\");\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(2);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzEzOTgwMzk3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.Mp25EjA5oGjYaKJMDFncv_qHjk8R2hRNEWqUQJD4uKE",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -802,7 +1073,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa\",\r\n    \"nombre\": \"Cancion\",\r\n    \"descripcion\": \"descripcion de la cancion\",\r\n    \"duracion\": 5000,\r\n    \"version\": 1,\r\n    \"borrado\": false\r\n}",
+					"raw": "{\r\n    \"id\": \"{{uuidcancion}}\",\r\n    \"nombre\": \"Cancion cambiada\",\r\n    \"descripcion\": \"descripcion cancion\",\r\n    \"duracion\":1000,\r\n    \"version\":1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -810,12 +1081,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/cancion",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/cancion",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"cancion"
 					]
@@ -824,23 +1093,48 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/cancion",
+			"name": "CANCION Editar version mala",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene el grupo original\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).to.eql(\"Cancion cambiada\");\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).not.to.eql(undefined);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzE0Mzc5ODE5LCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.pU0oPAQrgk617HZ8v-JO-Zky_XDoVgApjVzl_zLmZ1I",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
 				},
-				"method": "DELETE",
+				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa\",\r\n    \"nombre\": \"Cancion\",\r\n    \"descripcion\": \"descripcion de la cancion\",\r\n    \"duracion\": 5000,\r\n    \"version\": 3,\r\n    \"borrado\": false\r\n}",
+					"raw": "{\r\n    \"id\": \"{{uuidcancion}}\",\r\n    \"nombre\": \"Cancion cambiada\",\r\n    \"descripcion\": \"descripcion cancion\",\r\n    \"duracion\":1000,\r\n    \"version\":100\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -848,12 +1142,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/cancion",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/cancion",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"cancion"
 					]
@@ -862,14 +1154,145 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/nota/0cd422c8-4f22-44f9-a965-caaaaaaaaaaa",
+			"name": "CANCION Editar uno que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"Cancion cambiada\",\r\n    \"descripcion\": \"descripcion cancion\",\r\n    \"duracion\":1000,\r\n    \"version\":100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/cancion",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cancion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CANCION Editar uno que no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"Cancion cambiada\",\r\n    \"descripcion\": \"descripcion cancion\",\r\n    \"duracion\":1000,\r\n    \"version\":100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/cancion",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cancion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NOTA crear",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene nota\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
+							"    pm.expect(response.texto).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(1);\r",
+							"});\r",
+							"\r",
+							"//redefinir el uuid de grupo\r",
+							"pm.globals.set(\"uuidnota\", response.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -878,7 +1301,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\r\n    \"nombre\": \"Segunda nota\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\":0\r\n}",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"Primera nota\",\r\n    \"texto\": \"Texto inicial\",\r\n    \"version\":0\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -886,29 +1309,50 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/nota/0cd422c8-4f22-44f9-a965-caaaaaaaaaaa",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/nota/{{uuidcancion}}",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"nota",
-						"0cd422c8-4f22-44f9-a965-caaaaaaaaaaa"
+						"{{uuidcancion}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/nota",
+			"name": "NOTA Editar bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene la nota cambiada\", ()=>{\r",
+							"    pm.expect(response.id).to.eql(pm.globals.get(\"uuidnota\"));\r",
+							"    pm.expect(response.nombre).to.eql(\"Nota cambiada\");\r",
+							"    pm.expect(response.texto).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(2);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzE0MDY0NzUzLCJlbWFpbCI6InRlc3QxQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.X9JvP_fvzr0h3XNGIz-K4hLqFGV9UmJF9jf5IB7Om5g",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -917,7 +1361,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 1,\r\n}",
+					"raw": "{\r\n    \"id\": \"{{uuidnota}}\",\r\n    \"nombre\": \"Nota cambiada\",\r\n    \"texto\": \"texto cambiado\",\r\n    \"version\":1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -925,12 +1369,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/nota",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/nota",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"nota"
 					]
@@ -939,23 +1381,48 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/nota",
+			"name": "NOTA Editar version mala",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene el nota original\", ()=>{\r",
+							"    pm.expect(response.id).to.eql(pm.globals.get(\"uuidnota\"));\r",
+							"    pm.expect(response.nombre).to.eql(\"Nota cambiada\");\r",
+							"    pm.expect(response.texto).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).not.to.eql(undefined);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
 				},
-				"method": "DELETE",
+				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 1\r\n}",
+					"raw": "{\r\n    \"id\": \"{{uuidnota}}\",\r\n    \"nombre\": \"Nota cambiada\",\r\n    \"texto\": \"texto cambiado\",\r\n    \"version\":10000\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -963,12 +1430,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/nota",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/nota",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"nota"
 					]
@@ -977,14 +1442,143 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/audio",
+			"name": "NOTA Editar uno que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQ2MDMyMzg5LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.FmPIGON90sIeA87otrwfiARmK9pM2yl9NmQQ4SF_Nnk",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"Nota cambiada\",\r\n    \"texto\": \"texto cambiado\",\r\n    \"version\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/nota",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NOTA Editar uno que no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidnota}}\",\r\n    \"nombre\": \"Nota cambiada\",\r\n    \"texto\": \"texto cambiado\",\r\n    \"version\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/nota",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO crear",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene audio\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombreArchivo).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(1);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -996,7 +1590,7 @@
 					"formdata": [
 						{
 							"key": "datos",
-							"value": "{\"id\":\"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\"version\":0}",
+							"value": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"micosa.mp3\",\"version\":0}",
 							"contentType": "application/json",
 							"type": "text"
 						},
@@ -1008,12 +1602,10 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/audio",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/audio",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"audio"
 					]
@@ -1022,14 +1614,103 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/audio",
+			"name": "AUDIO crear duplicado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene audio\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombreArchivo).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(1);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQ2MDMyMzg5LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.FmPIGON90sIeA87otrwfiARmK9pM2yl9NmQQ4SF_Nnk",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "datos",
+							"value": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"micosa.mp3\",\"version\":0}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "archivo",
+							"type": "file",
+							"src": "/G:/temp/almacenamiento/micosa.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/audio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO editar bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene audio\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombreArchivo).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.globals.set(\"nombreaudio\",response.nombreArchivo);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -1041,7 +1722,7 @@
 					"formdata": [
 						{
 							"key": "datos",
-							"value": "{\"id\":\"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\"version\":1}",
+							"value": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"micosa.mp3\",\"version\":1}",
 							"contentType": "application/json",
 							"type": "text"
 						},
@@ -1053,12 +1734,10 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/audio",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/audio",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"audio"
 					]
@@ -1067,36 +1746,63 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/audio",
+			"name": "AUDIO editar version mal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene audio\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombreArchivo).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).not.to.eql(undefined);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzE0NDA0MDU3LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.JBS6tTXOF2lFRCdwSElqEI42QnJqiwMP1Hv9XkJ0tRs",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
 				},
-				"method": "DELETE",
+				"method": "PUT",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\"id\":\"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1\",\"version\":1}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "datos",
+							"value": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"micosa.mp3\",\"version\":5002}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/G:/temp/almacenamiento/sample-3s.mp3"
 						}
-					}
+					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/audio",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/audio",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"audio"
 					]
@@ -1105,14 +1811,157 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/audio/0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1",
+			"name": "AUDIO editar uno que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							" \r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQ2MDMyMzg5LCJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiYXV0aG9yaXRpZXMiOlsidXN1YXJpbyJdfQ.FmPIGON90sIeA87otrwfiARmK9pM2yl9NmQQ4SF_Nnk",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "datos",
+							"value": "{\"id\":\"{{$randomUUID}}\",\"nombreArchivo\":\"micosa.mp3\",\"version\":5002}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/G:/temp/almacenamiento/sample-3s.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/audio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO editar uno que no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							" \r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "datos",
+							"value": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"micosa.mp3\",\"version\":5002}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/G:/temp/almacenamiento/sample-3s.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/audio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO descargar",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Descargando archivo\",function(){\r",
+							"   pm.response.to.have.header(\"Content-Type\");\r",
+							"   pm.response.to.be.header(\"Content-Type\", \"application/octet-stream\");\r",
+							"});\r",
+							"pm.test(\"Nombre correcto de archivo\",function(){\r",
+							"   pm.response.to.have.header(\"Content-Disposition\");\r",
+							"   pm.response.to.be.header(\"Content-Disposition\", \"attachment; filename=\"+pm.globals.get(\"nombreaudio\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -1120,22 +1969,58 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/audio/0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1",
-					"protocol": "http",
+					"raw": "{{baseUrl}}/audio/{{uuidnota}}",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "8080",
 					"path": [
 						"audio",
-						"0cd422c8-4f22-44f9-a965-bbbbbbbbbbb1"
+						"{{uuidnota}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/usuario/grupos",
+			"name": "Descargar grupos de usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"console.log(response);\r",
+							"pm.test(\"Tiene datos de los grupos\", ()=>{\r",
+							"    pm.expect(response.length).to.greaterThan(0);\r",
+							"    let encontrado=false\r",
+							"     for (g in response){\r",
+							"        grupo = response[g]\r",
+							"         if (grupo.id == pm.globals.get(\"uuidgrupo\")){\r",
+							"            pm.expect(grupo.id).to.eq(pm.globals.get(\"uuidgrupo\"));\r",
+							"            for (c in grupo.canciones){\r",
+							"                cancion = grupo.canciones[c];\r",
+							"                if (cancion.id==pm.globals.get(\"uuidcancion\"))\r",
+							"                    for (n in cancion.notas){\r",
+							"                        nota= cancion.notas[n];\r",
+							"                        if (nota.id==pm.globals.get(\"uuidnota\"))\r",
+							"                            encontrado = nota.audio.id==pm.globals.get(\"uuidnota\") && nota.audio.nombreArchivo==pm.globals.get(\"nombreaudio\");\r",
+							"                }\r",
+							"                            \r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"     pm.expect(encontrado).to.eq(true);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -1157,6 +2042,793 @@
 					"path": [
 						"usuario",
 						"grupos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO borrar version mal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"_\",\"version\":100000}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/audio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO borrar uno que no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"_\",\"version\":100000}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/audio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO borrar bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{uuidnota}}\",\"nombreArchivo\":\"_\",\"version\":2}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/audio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AUDIO borrar no existente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":\"{{$randomUUID}}\",\"nombreArchivo\":\"_\",\"version\":1}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/audio",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NOTA borrar version mal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene el nota original\", ()=>{\r",
+							"    pm.expect(response.id).to.eql(pm.globals.get(\"uuidnota\"));\r",
+							"    pm.expect(response.nombre).to.eql(\"Nota cambiada\");\r",
+							"    pm.expect(response.texto).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).not.to.eql(undefined);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidnota}}\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/nota",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NOTA borrar no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							" \r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidnota}}\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/nota",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NOTA borrar bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidnota}}\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/nota",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NOTA borrar no existente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							" \r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"Segunda nota cambiada\",\r\n    \"texto\": \"Esta nota tiene muchas cosas puestas\",\r\n    \"version\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/nota",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"nota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CANCION borrar version mal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene grupo\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).to.eql(2);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidcancion}}\",\r\n    \"nombre\": \"Cancion\",\r\n    \"descripcion\": \"descripcion de la cancion\",\r\n    \"duracion\": 5000,\r\n    \"version\": 5000,\r\n    \"borrado\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/cancion",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cancion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CANCION borrar no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidcancion}}\",\r\n    \"nombre\": \"Cancion\",\r\n    \"descripcion\": \"descripcion de la cancion\",\r\n    \"duracion\": 5000,\r\n    \"version\": 5000,\r\n    \"borrado\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/cancion",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cancion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CANCION borrar bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidcancion}}\",\r\n    \"nombre\": \"Cancion\",\r\n    \"descripcion\": \"descripcion de la cancion\",\r\n    \"duracion\": 5000,\r\n    \"version\": 2,\r\n    \"borrado\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/cancion",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"cancion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GRUPO Borrar version mala",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 409\", function () {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Tiene grupo\", ()=>{\r",
+							"    pm.expect(response.id).not.to.eql(undefined);\r",
+							"    pm.expect(response.nombre).not.to.eql(undefined);\r",
+							"    pm.expect(response.descripcion).not.to.eql(undefined);\r",
+							"    pm.expect(response.version).not.to.eql(undefined);\r",
+							"    pm.expect(response.usuarios[0].email).to.eql(\"test1@test.com\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1000\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GRUPO Borrar uno que no pertenece",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tokensecundario}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GRUPO Borrar bien",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{uuidgrupo}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 4\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GRUPO Borrar uno que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status es 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{$randomUUID}}\",\r\n    \"nombre\": \"nombre grupo cambiado\",\r\n    \"descripcion\": \"descripcion grupo\",\r\n    \"version\": 1\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/grupo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grupo"
 					]
 				}
 			},

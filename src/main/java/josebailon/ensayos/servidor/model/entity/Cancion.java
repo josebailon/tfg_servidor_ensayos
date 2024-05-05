@@ -57,7 +57,7 @@ public class Cancion {
     @JsonIgnore
     private Grupo grupo;
 
-    @OneToMany(mappedBy="cancion", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="cancion", cascade = CascadeType.ALL)
     @JsonView(Vista.Completa.class)
     private Set<Nota> notas;
     @Override
