@@ -2,7 +2,7 @@
 ---
 server:
     port: 8080
-    address: 192.168.1.53
+    address: 0.0.0.0
 security:
      jwt:
          secret-key: keydeencriptacion

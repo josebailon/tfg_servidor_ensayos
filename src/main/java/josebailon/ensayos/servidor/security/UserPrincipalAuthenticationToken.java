@@ -28,6 +28,7 @@ public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToke
         try{
             userPrincipalService.loadUserByUsername(principal.getEmail());
             autenticado=true;
+
         }catch(Exception ex){
             System.out.println("Usuario no existente, cancelando autorizacion");
         }

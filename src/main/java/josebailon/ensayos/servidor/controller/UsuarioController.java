@@ -9,15 +9,20 @@ package josebailon.ensayos.servidor.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.List;
+import java.util.Optional;
 import josebailon.ensayos.servidor.model.entity.Grupo;
+import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.model.vistas.Vista;
 import josebailon.ensayos.servidor.security.UserPrincipal;
 import josebailon.ensayos.servidor.service.IUsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -38,5 +43,13 @@ public class UsuarioController {
     public List<Grupo> gruposDeUsuario(@AuthenticationPrincipal UserPrincipal principal){
         return usuarioService.getGruposCompletos(principal.getUserId());
     }
-    
+
+    @JsonView(Vista.Esencial.class)
+    @GetMapping("/existe/{email}")
+    public Usuario usuario(@PathVariable String email, @AuthenticationPrincipal UserPrincipal principal){
+        Optional<Usuario> usuario = usuarioService.findByEmail(email);
+        if (!usuario.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
+        return usuarioService.findByEmail(email).get();
+    }    
 }//end AuthController
