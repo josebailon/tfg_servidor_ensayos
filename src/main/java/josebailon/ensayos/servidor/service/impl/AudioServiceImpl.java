@@ -135,8 +135,7 @@ public class AudioServiceImpl implements IAudioService {
             Usuario u = usuario.get();
             Audio a = audio.get();
             if (resolutorPermisos.permitido(u, a)) {
-                if (request.getVersion() == a.getVersion()) {
-                    try {
+                     try {
                         System.out.println("Nombre archivo " + a.getNombreArchivo() + "   id:" + a.getId());
                         Nota n = a.getNota();
                         n.setAudio(null);
@@ -145,10 +144,6 @@ public class AudioServiceImpl implements IAudioService {
                     } catch (IllegalStateException | IOException ex) {
                         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
                     }
-
-                } else {
-                    throw new VersionIncorrectaException("", a);
-                }
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }

@@ -103,12 +103,7 @@ public class NotaServiceImpl implements INotaService{
             Usuario u= usuario.get();
             Nota n= nota.get();
             if(resolutorPermisos.permitido(u,n)){
-                if (request.getVersion()==n.getVersion()){
                     repositorioNota.deleteById(n.getId());
-                }
-                else{
-                  throw new VersionIncorrectaException("",n);
-                }
             }else{
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }

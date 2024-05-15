@@ -99,12 +99,9 @@ public class CancionServiceImpl implements ICancionService{
             Usuario u= usuario.get();
             Cancion c= cancion.get();
             if(resolutorPermisos.permitido(u,c)){
-                if (request.getVersion()==c.getVersion()){
+ 
                     repositorioCancion.deleteById(c.getId());
-                }
-                else{
-                  throw new VersionIncorrectaException("",c);
-                }
+
             }else{
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }

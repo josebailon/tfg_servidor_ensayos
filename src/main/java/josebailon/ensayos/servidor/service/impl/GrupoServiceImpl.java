@@ -99,11 +99,9 @@ public class GrupoServiceImpl implements IGrupoService {
             Usuario u = usuario.get();
             Grupo g = grupo.get();
             if (resolutorPermisos.permitido(u, g)) {
-                if (request.getVersion() == g.getVersion()) {
+ 
                     repositorioGrupo.deleteById(g.getId());
-                } else {
-                    throw new VersionIncorrectaException("", g);
-                }
+
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
