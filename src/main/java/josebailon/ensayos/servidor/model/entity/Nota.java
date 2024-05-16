@@ -10,6 +10,7 @@ package josebailon.ensayos.servidor.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -44,6 +45,7 @@ public class Nota {
     private String nombre;
     @JsonView(Vista.Esencial.class)
     @NotNull
+    @Column(columnDefinition="TEXT")
     private String texto;
     @JsonView(Vista.Esencial.class)
     @NotNull

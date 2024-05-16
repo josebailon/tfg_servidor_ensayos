@@ -54,9 +54,9 @@ public class GrupoController {
         return grupoService.edit(request, principal.getUserId());
     }
     @JsonView(Vista.Esencial.class)
-    @DeleteMapping()
-    public ResponseEntity delete(@RequestBody @Valid Grupo request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        grupoService.delete(request, principal.getUserId());
+    @DeleteMapping("/{idgrupo}")
+    public ResponseEntity delete(@PathVariable String idgrupo, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        grupoService.delete(UUID.fromString(idgrupo), principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     

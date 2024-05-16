@@ -46,7 +46,7 @@ public class Cancion {
     private String descripcion;
     @JsonView(Vista.Esencial.class)
     @NotNull
-    private int duracion;
+    private String duracion;
     @JsonView(Vista.Esencial.class)
     @NotNull
     private int version;

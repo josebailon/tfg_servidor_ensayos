@@ -92,16 +92,14 @@ public class GrupoServiceImpl implements IGrupoService {
     }
 
     @Override
-    public void delete(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
+    public void delete(UUID idgrupo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Grupo> grupo = repositorioGrupo.findById(request.getId());
+        Optional<Grupo> grupo = repositorioGrupo.findById(idgrupo);
         if (usuario.isPresent() && grupo.isPresent()) {
             Usuario u = usuario.get();
             Grupo g = grupo.get();
             if (resolutorPermisos.permitido(u, g)) {
- 
                     repositorioGrupo.deleteById(g.getId());
-
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
@@ -136,17 +134,12 @@ public class GrupoServiceImpl implements IGrupoService {
                 if (!g.getUsuarios().contains(uDestino)) {
                     return g;
                 }
-                //comprobar si el grupo tiene mas de un usuario y si no lo tiene devolver error
-                if (g.getUsuarios().size()<2)
-                    throw new ResponseStatusException(HttpStatus.CONFLICT, "El grupo no puede quedar sin usuarios");
-                    
                 //Desasignar usuario    
                 uDestino.getGrupos().remove(g);
                 g.getUsuarios().remove(uDestino);
                 g.setVersion(g.getVersion() + 1);
                 repositorioUsuario.save(uDestino);
                 repositorioGrupo.save(g);
-
                 return g;
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);

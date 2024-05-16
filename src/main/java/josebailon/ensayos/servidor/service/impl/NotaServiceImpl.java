@@ -96,9 +96,9 @@ public class NotaServiceImpl implements INotaService{
 
    
     @Override
-    public void delete(Nota request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
+    public void delete(UUID idNota, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
          Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Nota> nota = repositorioNota.findById(request.getId());
+        Optional<Nota> nota = repositorioNota.findById(idNota);
         if (usuario.isPresent() && nota.isPresent()){
             Usuario u= usuario.get();
             Nota n= nota.get();

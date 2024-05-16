@@ -24,7 +24,7 @@ public interface IAudioService {
 
     public Audio edit(Audio audio, MultipartFile archivo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
-    public void delete(Audio request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
+    public void delete(UUID idAudio, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
 
     public ResponseEntity<Resource> get(UUID idAudio, Long idUsuario);
 }

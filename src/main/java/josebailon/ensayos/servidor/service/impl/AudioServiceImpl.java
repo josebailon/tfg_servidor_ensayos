@@ -128,9 +128,9 @@ public class AudioServiceImpl implements IAudioService {
     }
 
     @Override
-    public void delete(Audio request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
+    public void delete(UUID idAudio, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Audio> audio = repositorioAudio.findById(request.getId());
+        Optional<Audio> audio = repositorioAudio.findById(idAudio);
         if (usuario.isPresent() && audio.isPresent()) {
             Usuario u = usuario.get();
             Audio a = audio.get();

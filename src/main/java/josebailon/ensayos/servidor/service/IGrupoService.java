@@ -22,7 +22,7 @@ public interface IGrupoService {
 
     public Grupo edit(Grupo request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
-    public void delete(Grupo request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
+    public void delete(UUID idGrupo, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
 
     public Grupo addUsuario(UUID idGrupo, String emailusuario, Long idUsuario);
 

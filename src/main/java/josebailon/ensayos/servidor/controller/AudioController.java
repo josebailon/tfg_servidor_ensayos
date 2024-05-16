@@ -60,10 +60,10 @@ public class AudioController {
         return audioService.edit(request, archivo, principal.getUserId());
     }
     
-   @DeleteMapping("")
+   @DeleteMapping("/{idaudio}")
     @JsonView(Vista.Esencial.class)
-    public ResponseEntity delete(@RequestBody @Valid Audio request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        audioService.delete(request, principal.getUserId());
+    public ResponseEntity delete(@PathVariable String idaudio, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        audioService.delete(UUID.fromString(idaudio), principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     

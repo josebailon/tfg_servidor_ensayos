@@ -40,7 +40,7 @@ public class CancionServiceImpl implements ICancionService{
 
     @Override
     @Transactional
-    public Cancion create(UUID idCancion, String nombre, String descripcion, int duracion, int version, UUID idGrupo, Long idUsuario)throws ResponseStatusException {
+    public Cancion create(UUID idCancion, String nombre, String descripcion, String duracion, int version, UUID idGrupo, Long idUsuario)throws ResponseStatusException {
             Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
             Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
             if (usuario.isPresent() && grupo.isPresent()){
@@ -92,9 +92,9 @@ public class CancionServiceImpl implements ICancionService{
 
    
     @Override
-    public void delete(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
+    public void delete(UUID idcancion, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException{
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Cancion> cancion = repositorioCancion.findById(request.getId());
+        Optional<Cancion> cancion = repositorioCancion.findById(idcancion);
         if (usuario.isPresent() && cancion.isPresent()){
             Usuario u= usuario.get();
             Cancion c= cancion.get();

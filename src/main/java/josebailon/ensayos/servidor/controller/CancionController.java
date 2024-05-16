@@ -53,10 +53,10 @@ public class CancionController {
     public Cancion edit(@RequestBody @Valid Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         return cancionService.edit(request, principal.getUserId());
     }
-    @DeleteMapping()
+    @DeleteMapping("/{idcancion")
     @JsonView(Vista.Esencial.class)
-    public ResponseEntity delete(@RequestBody @Valid Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        cancionService.delete(request, principal.getUserId());
+    public ResponseEntity delete(@PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        cancionService.delete(UUID.fromString(idcancion), principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
  

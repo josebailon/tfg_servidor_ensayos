@@ -55,10 +55,10 @@ public class NotaController {
     }
     
     
-    @DeleteMapping()
+    @DeleteMapping("/{idnota}")
     @JsonView(Vista.Esencial.class)
-    public ResponseEntity delete(@RequestBody @Valid Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        notaService.delete(request, principal.getUserId());
+    public ResponseEntity delete(@PathVariable String idnota, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+        notaService.delete(UUID.fromString(idnota), principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
         
     }

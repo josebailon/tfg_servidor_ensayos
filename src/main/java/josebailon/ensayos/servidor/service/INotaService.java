@@ -20,5 +20,5 @@ public interface INotaService {
 
     public Nota edit(Nota request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
-    public void delete(Nota request, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
+    public void delete(UUID idNota, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
 }
