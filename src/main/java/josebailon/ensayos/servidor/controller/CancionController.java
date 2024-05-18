@@ -45,7 +45,7 @@ public class CancionController {
     @PostMapping("/{idgrupo}")
     @JsonView(Vista.Esencial.class)
     public Cancion create(@RequestBody @Valid Cancion request, @PathVariable String idgrupo, @AuthenticationPrincipal UserPrincipal principal){
-        return cancionService.create(request.getId(), request.getNombre(), request.getDescripcion(),request.getDuracion(), request.getVersion(),UUID.fromString(idgrupo), principal.getUserId());
+        return cancionService.create(request,UUID.fromString(idgrupo), principal.getUserId());
     }
 
     @PutMapping()
@@ -53,7 +53,7 @@ public class CancionController {
     public Cancion edit(@RequestBody @Valid Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         return cancionService.edit(request, principal.getUserId());
     }
-    @DeleteMapping("/{idcancion")
+    @DeleteMapping("/{idcancion}")
     @JsonView(Vista.Esencial.class)
     public ResponseEntity delete(@PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         cancionService.delete(UUID.fromString(idcancion), principal.getUserId());

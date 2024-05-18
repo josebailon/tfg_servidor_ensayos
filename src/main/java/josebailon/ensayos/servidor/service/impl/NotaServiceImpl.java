@@ -44,19 +44,16 @@ public class NotaServiceImpl implements INotaService{
 
     @Override
     @Transactional
-    public Nota create(UUID idNota, String nombre, String texto, int version, UUID idCancion, Long idUsuario)throws ResponseStatusException {
+    public Nota create(Nota request, UUID idCancion, Long idUsuario)throws ResponseStatusException {
             Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
             Optional<Cancion> cancion = repositorioCancion.findById(idCancion);
             
             if (usuario.isPresent() && cancion.isPresent()){
                 Usuario u = usuario.get();
                 Cancion c = cancion.get();
-                Nota n = new Nota();
+                Nota n = request;
                 if(resolutorPermisos.permitido(u,c)){
-                    n.setId(idNota);
-                    n.setNombre(nombre);
-                    n.setTexto(texto);
-                    n.setVersion(version+1);
+                    n.setVersion(request.getVersion()+1);
                     n.setCancion(c);
                     return repositorioNota.save(n);
                 }else{
@@ -81,6 +78,7 @@ public class NotaServiceImpl implements INotaService{
                     n.setNombre(request.getNombre());
                     n.setTexto(request.getTexto());
                     n.setAudio(request.getAudio());
+                    n.setFecha(request.getFecha());
                   return repositorioNota.save(n);
                 }
                 else{

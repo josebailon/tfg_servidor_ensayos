@@ -7,6 +7,7 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.CascadeType;
@@ -18,6 +19,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -50,6 +52,10 @@ public class Cancion {
     @JsonView(Vista.Esencial.class)
     @NotNull
     private int version;
+    @JsonView(Vista.Esencial.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull
+    private Date fecha;
 
 
     @ManyToOne

@@ -49,7 +49,7 @@ public class AudioController {
     @PostMapping("")
     @JsonView(Vista.Esencial.class)
     public Audio create( @RequestPart("datos") @Valid Audio request, @RequestPart("archivo") MultipartFile archivo, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        return audioService.create(request.getId(), request.getVersion(),archivo, principal.getUserId());
+        return audioService.create(request,archivo, principal.getUserId());
     }
     
     

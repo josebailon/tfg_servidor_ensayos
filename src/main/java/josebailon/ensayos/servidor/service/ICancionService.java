@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Jose Javier Bailon Ortiz
  */
 public interface ICancionService {
-    public Cancion create(   UUID idCancion,String nombre, String descripcion, String duracion, int version, UUID idGrupo, Long idUsuario)throws ResponseStatusException;
+    public Cancion create(   Cancion request, UUID idGrupo, Long idUsuario)throws ResponseStatusException;
 
     public Cancion edit(Cancion request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 

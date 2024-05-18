@@ -41,27 +41,23 @@ public class GrupoServiceImpl implements IGrupoService {
 
     @Override
     @Transactional
-    public Grupo create(UUID idGrupo, String nombre, String descripcion, int version, Long idUsuario) {
+    public Grupo create(Grupo grupo, Long idUsuario) {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
+        Optional<Grupo> grupoLocal = repositorioGrupo.findById(grupo.getId());
         //grupo ya existente
-        if (grupo.isPresent()) {
+        if (grupoLocal.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         if (usuario.isPresent()) {
 
             Usuario u = usuario.get();
-            Grupo g = new Grupo();
-            g.setId(idGrupo);
-            g.setNombre(nombre);
-            g.setDescripcion(descripcion);
-            g.setVersion(version + 1);
-            g.getUsuarios().add(usuario.get());
-            u.getGrupos().add(g);
-            repositorioGrupo.save(g);
+            grupo.setVersion(grupo.getVersion()+1);
+            grupo.getUsuarios().add(u);
+            u.getGrupos().add(grupo);
+            repositorioGrupo.save(grupo);
             repositorioUsuario.save(u);
-            return g;
+            return grupo;
         } else {
             return null;
         }
@@ -79,6 +75,7 @@ public class GrupoServiceImpl implements IGrupoService {
                     g.setVersion(request.getVersion() + 1);
                     g.setNombre(request.getNombre());
                     g.setDescripcion(request.getDescripcion());
+                    g.setFecha(request.getFecha());
                     return repositorioGrupo.save(g);
                 } else {
                     throw new VersionIncorrectaException("", g);
@@ -137,7 +134,6 @@ public class GrupoServiceImpl implements IGrupoService {
                 //Desasignar usuario    
                 uDestino.getGrupos().remove(g);
                 g.getUsuarios().remove(uDestino);
-                g.setVersion(g.getVersion() + 1);
                 repositorioUsuario.save(uDestino);
                 repositorioGrupo.save(g);
                 return g;
@@ -159,7 +155,6 @@ public class GrupoServiceImpl implements IGrupoService {
             Grupo g = grupo.get();
             Usuario uDestino = usuarioDestino.get();
             if (resolutorPermisos.permitido(u, g)) {
-                g.setVersion(g.getVersion() + 1);
                 g.getUsuarios().add(uDestino);
                 return repositorioGrupo.save(g);
             } else {

@@ -20,9 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Jose Javier Bailon Ortiz
  */
 public interface IAudioService {
-    public Audio create(   UUID idAudio, int version, MultipartFile archivo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
+    public Audio create(   Audio request, MultipartFile archivo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
-    public Audio edit(Audio audio, MultipartFile archivo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
+    public Audio edit(Audio request, MultipartFile archivo, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 
     public void delete(UUID idAudio, Long idUsuario)throws ResponseStatusException, VersionIncorrectaException;
 

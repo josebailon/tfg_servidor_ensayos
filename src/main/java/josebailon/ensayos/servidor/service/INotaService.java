@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Jose Javier Bailon Ortiz
  */
 public interface INotaService {
-    public Nota create(   UUID idNota,String nombre, String texto, int version, UUID idCancion, Long idUsuario)throws ResponseStatusException;
+    public Nota create(  Nota request, UUID idCancion, Long idUsuario)throws ResponseStatusException;
 
     public Nota edit(Nota request, Long idUsuario) throws ResponseStatusException, VersionIncorrectaException;
 

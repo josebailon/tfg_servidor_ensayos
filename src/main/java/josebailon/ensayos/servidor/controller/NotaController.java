@@ -45,7 +45,7 @@ public class NotaController {
     @PostMapping("/{idcancion}")
     @JsonView(Vista.Esencial.class)
     public Nota create(@RequestBody @Valid Nota request, @PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal){
-        return notaService.create(request.getId(), request.getNombre(), request.getTexto(), request.getVersion(),UUID.fromString(idcancion), principal.getUserId());
+        return notaService.create(request,UUID.fromString(idcancion), principal.getUserId());
     }
 
     @PutMapping()

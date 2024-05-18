@@ -43,10 +43,15 @@ public class GrupoController {
     //Anotaciones
     //RequestBody transforma el cuerpo de la peticion http al objeto java
     //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
+//    @JsonView(Vista.Esencial.class)
+//    @PostMapping()
+//    public Grupo create(@RequestBody @Valid Grupo request, @AuthenticationPrincipal UserPrincipal principal){
+//        return grupoService.create(request.getId(), request.getNombre(), request.getDescripcion(), request.getVersion(), principal.getUserId());
+//    }
     @JsonView(Vista.Esencial.class)
     @PostMapping()
     public Grupo create(@RequestBody @Valid Grupo request, @AuthenticationPrincipal UserPrincipal principal){
-        return grupoService.create(request.getId(), request.getNombre(), request.getDescripcion(), request.getVersion(), principal.getUserId());
+        return grupoService.create(request, principal.getUserId());
     }
     @JsonView(Vista.Esencial.class)
     @PutMapping()

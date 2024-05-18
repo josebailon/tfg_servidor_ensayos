@@ -50,10 +50,10 @@ public class AudioServiceImpl implements IAudioService {
 
     @Override
     @Transactional
-    public Audio create(UUID idAudio, int version, MultipartFile archivo, Long idUsuario)  throws ResponseStatusException, VersionIncorrectaException {
+    public Audio create(Audio request, MultipartFile archivo, Long idUsuario)  throws ResponseStatusException, VersionIncorrectaException {
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
-        Optional<Nota> nota = repositorioNota.findById(idAudio);
-        Optional<Audio> audio = repositorioAudio.findById(idAudio);
+        Optional<Nota> nota = repositorioNota.findById(request.getId());
+        Optional<Audio> audioLocal = repositorioAudio.findById(request.getId());
         if (usuario.isPresent()) {
 
             Usuario u = usuario.get();
@@ -62,25 +62,19 @@ public class AudioServiceImpl implements IAudioService {
             if (resolutorPermisos.permitido(u, n)) {
                 
                 //diferir a update si ya existe
-                if (audio.isPresent()){
-                    Audio audioDiferido= new Audio();
-                    audioDiferido.setId(idAudio);
-                    audioDiferido.setNombreArchivo("");
-                    audioDiferido.setNota(n);
-                    audioDiferido.setVersion(version);
-                    return this.edit(audioDiferido, archivo, idUsuario);
+                if (audioLocal.isPresent()){
+                    return this.edit(request, archivo, idUsuario);
                 }
                 
                 
                 String nombreArchivo;
                 try {
                     nombreArchivo = this.guardaArchivo(archivo);
+                    a = request;
 //                    a.setId(idAudio);
                     a.setNombreArchivo(nombreArchivo);
-                    a.setVersion(version + 1);
+                    a.setVersion(request.getVersion() + 1);
                     a.setNota(n);
-                    System.out.println(n);
-                    System.out.println(a);
                     return repositorioAudio.save(a);
                 } catch (IllegalStateException | IOException ex) {
                     throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -108,9 +102,9 @@ public class AudioServiceImpl implements IAudioService {
                     try {
                         nombreArchivo = this.guardaArchivo(archivo);
                         eliminaArchivo(nombreArchivoAnterior);
+                        a=request;
                         a.setNombreArchivo(nombreArchivo);
                         a.setVersion(request.getVersion() + 1);
-                        a.setNombreArchivo(nombreArchivo);
                         return repositorioAudio.save(a);
 
                     } catch (IllegalStateException | IOException ex) {

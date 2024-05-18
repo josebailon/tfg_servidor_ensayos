@@ -40,19 +40,15 @@ public class CancionServiceImpl implements ICancionService{
 
     @Override
     @Transactional
-    public Cancion create(UUID idCancion, String nombre, String descripcion, String duracion, int version, UUID idGrupo, Long idUsuario)throws ResponseStatusException {
+    public Cancion create(Cancion cancion, UUID idGrupo, Long idUsuario)throws ResponseStatusException {
             Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
             Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
             if (usuario.isPresent() && grupo.isPresent()){
                 Usuario u = usuario.get();
                 Grupo g = grupo.get();
-                Cancion c = new Cancion();
+                Cancion c = cancion;
                 if(resolutorPermisos.permitido(u,g)){
-                    c.setId(idCancion);
-                    c.setNombre(nombre);
-                    c.setDescripcion(descripcion);
-                    c.setDuracion(duracion);
-                    c.setVersion(version+1);
+                    c.setVersion(cancion.getVersion()+1);
                     c.setGrupo(g);
                     return repositorioCancion.save(c);
                 }else{
