@@ -55,7 +55,7 @@ public class AudioController {
     
     @PutMapping("")
     @JsonView(Vista.Esencial.class)
-    public Audio edit(@RequestPart("datos") @Valid Audio request, @RequestPart("file") MultipartFile archivo, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+    public Audio edit(@RequestPart("datos") @Valid Audio request, @RequestPart("archivo") MultipartFile archivo, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         System.out.println(request);
         return audioService.edit(request, archivo, principal.getUserId());
     }
