@@ -8,6 +8,8 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.service.impl;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import josebailon.ensayos.servidor.model.auth.LoginResponse;
 import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.repository.UsuarioRepository;
@@ -36,9 +38,11 @@ public class AuthServiceImpl implements IAuthService{
     private final JwtCreadorToken jwtCreadorToken;
     private final AuthenticationManager authenticationManager;
     private final UsuarioRepository repositorio;
-    
+    private Logger logger = Logger.getLogger(AuthServiceImpl.class.getName());
+
     public LoginResponse intentoLogin(String email, String password){
-    
+        
+        logger.log(Level.INFO, "Login intento: {0}", email);
         //efectuar la comprobacion de autenticacion
         Authentication autenticacion = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password) );
         
@@ -47,12 +51,11 @@ public class AuthServiceImpl implements IAuthService{
         SecurityContextHolder.getContext().setAuthentication(autenticacion);
         
         UserPrincipal userPrincipal = (UserPrincipal)autenticacion.getPrincipal();
-        
         List<String> roles = userPrincipal.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .toList();
-        
-        
+        logger.log(Level.INFO, "Login correcto: {0}", email);
+        //crear el token de autentificacion y devolverlo
         String token = jwtCreadorToken.crear(userPrincipal.getUserId(), userPrincipal.getEmail(), roles);
         return LoginResponse.builder().accessToken(token).build();
     }
@@ -62,7 +65,7 @@ public class AuthServiceImpl implements IAuthService{
     
     @Override
     public Usuario registrar(String email, String password) throws DuplicatedEmailException {
-        
+        logger.log(Level.INFO, "Intento de registro: {0}}", email);
         if (!repositorio.findByEmail(email).isEmpty()) {
             throw new DuplicatedEmailException(String.format("El email: %s ya está ocupado", email));
         }

@@ -15,7 +15,6 @@ import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.service.IAuthService;
 import josebailon.ensayos.servidor.service.exception.DuplicatedEmailException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     
     private final IAuthService authService;
-    
+
     //Anotaciones
     //RequestBody transforma el cuerpo de la peticion http al objeto java
     //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)

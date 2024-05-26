@@ -1,0 +1,26 @@
+version: "3"
+services:
+    mysqldb:
+        image: mysql
+        ports:
+            - "${MYSQL_HOST_PORT}:3306"
+        env_file:
+             .env
+        volumes:
+            - "${RUTA_DB_HOST}:/var/lib/mysql"
+
+    ensayos_server_api:
+        image: ensayos_server_api
+        build: .
+        ports:
+            - "${PUERTO_API}:${PUERTO_API}"
+        depends_on: 
+            - mysqldb
+        restart:
+            always
+        env_file:
+             .env
+        volumes:
+            - "${RUTA_ALMACENAMIENTO_HOST}:${RUTA_ALMACENAMIENTO_API}"
+ 
+     

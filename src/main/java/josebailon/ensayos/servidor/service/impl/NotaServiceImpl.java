@@ -10,8 +10,9 @@ package josebailon.ensayos.servidor.service.impl;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import josebailon.ensayos.servidor.model.entity.Cancion;
-import josebailon.ensayos.servidor.model.entity.Grupo;
 import josebailon.ensayos.servidor.model.entity.Nota;
 import josebailon.ensayos.servidor.model.entity.Usuario;
 import josebailon.ensayos.servidor.repository.CancionRepository;
@@ -19,7 +20,6 @@ import josebailon.ensayos.servidor.repository.GrupoRepository;
 import josebailon.ensayos.servidor.repository.NotaRepository;
 import josebailon.ensayos.servidor.repository.UsuarioRepository;
 import josebailon.ensayos.servidor.security.ResolutorPermisos;
-import josebailon.ensayos.servidor.service.ICancionService;
 import josebailon.ensayos.servidor.service.INotaService;
 import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +41,7 @@ public class NotaServiceImpl implements INotaService{
         private final GrupoRepository repositorioGrupo;
         private final CancionRepository repositorioCancion;
         private final NotaRepository repositorioNota;
+    private Logger logger = Logger.getLogger(NotaServiceImpl.class.getName());
 
     @Override
     @Transactional
@@ -55,6 +56,7 @@ public class NotaServiceImpl implements INotaService{
                 if(resolutorPermisos.permitido(u,c)){
                     n.setVersion(request.getVersion()+1);
                     n.setCancion(c);
+                    logger.log(Level.INFO, "Nota creada: {0}", n.getId().toString() + " usuario " + idUsuario);
                     return repositorioNota.save(n);
                 }else{
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
@@ -79,6 +81,7 @@ public class NotaServiceImpl implements INotaService{
                     n.setTexto(request.getTexto());
                     n.setAudio(request.getAudio());
                     n.setFecha(request.getFecha());
+                    logger.log(Level.INFO, "Nota editada: {0}", n.getId().toString() + " usuario " + idUsuario);
                   return repositorioNota.save(n);
                 }
                 else{
@@ -102,6 +105,7 @@ public class NotaServiceImpl implements INotaService{
             Nota n= nota.get();
             if(resolutorPermisos.permitido(u,n)){
                     repositorioNota.deleteById(n.getId());
+                    logger.log(Level.INFO, "Nota borrada: {0}", n.getId().toString() + " usuario " + idUsuario);
             }else{
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND); 
             }

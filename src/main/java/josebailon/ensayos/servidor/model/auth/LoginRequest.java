@@ -9,13 +9,12 @@ package josebailon.ensayos.servidor.model.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 
 /**
  *
- * @author Jose Javier Bailon Ortiz
+ * @author Jose Javier Bailon Ortizs
  */
 @Getter //autogenerar getters
 @Builder //autogenerar constructor

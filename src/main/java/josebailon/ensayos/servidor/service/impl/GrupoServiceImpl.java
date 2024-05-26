@@ -6,8 +6,6 @@ Lista de paquetes:
  */
 package josebailon.ensayos.servidor.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,7 +21,6 @@ import josebailon.ensayos.servidor.service.exception.VersionIncorrectaException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -38,6 +35,7 @@ public class GrupoServiceImpl implements IGrupoService {
     private final ResolutorPermisos resolutorPermisos;
     private final UsuarioRepository repositorioUsuario;
     private final GrupoRepository repositorioGrupo;
+    private Logger logger = Logger.getLogger(GrupoServiceImpl.class.getName());
 
     @Override
     @Transactional
@@ -57,6 +55,7 @@ public class GrupoServiceImpl implements IGrupoService {
             u.getGrupos().add(grupo);
             repositorioGrupo.save(grupo);
             repositorioUsuario.save(u);
+            logger.log(Level.INFO, "Grupo creado: {0}", grupo.getId().toString() + " usuario " + idUsuario);
             return grupo;
         } else {
             return null;
@@ -76,6 +75,7 @@ public class GrupoServiceImpl implements IGrupoService {
                     g.setNombre(request.getNombre());
                     g.setDescripcion(request.getDescripcion());
                     g.setFecha(request.getFecha());
+                    logger.log(Level.INFO, "Grupo editado: {0}", g.getId().toString() + " usuario " + idUsuario);
                     return repositorioGrupo.save(g);
                 } else {
                     throw new VersionIncorrectaException("", g);
@@ -97,6 +97,7 @@ public class GrupoServiceImpl implements IGrupoService {
             Grupo g = grupo.get();
             if (resolutorPermisos.permitido(u, g)) {
                     repositorioGrupo.deleteById(g.getId());
+                    logger.log(Level.INFO, "Grupo borrado: {0}", g.getId().toString() + " usuario " + idUsuario);
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
@@ -115,13 +116,11 @@ public class GrupoServiceImpl implements IGrupoService {
      */
     @Override
     public Grupo deleteUsuario(UUID idGrupo, String emailUsuario, Long idUsuario) {
-        System.out.println("Inicio de borrado");
 
         Optional<Usuario> usuarioDestino = repositorioUsuario.findByEmail(emailUsuario);
         Optional<Usuario> usuario = repositorioUsuario.findById(idUsuario);
         Optional<Grupo> grupo = repositorioGrupo.findById(idGrupo);
         if (usuarioDestino.isPresent() && usuario.isPresent() && grupo.isPresent()) {
-            System.out.println("Elementos presentes");
             Usuario u = usuario.get();
             Grupo g = grupo.get();
             Usuario uDestino = usuarioDestino.get();
@@ -136,6 +135,7 @@ public class GrupoServiceImpl implements IGrupoService {
                 g.getUsuarios().remove(uDestino);
                 repositorioUsuario.save(uDestino);
                 repositorioGrupo.save(g);
+                logger.log(Level.INFO, "Usuario desasignado de grupo : {0}", uDestino.getEmail()+" " +g.getId().toString() + " usuario " + idUsuario);
                 return g;
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -156,6 +156,7 @@ public class GrupoServiceImpl implements IGrupoService {
             Usuario uDestino = usuarioDestino.get();
             if (resolutorPermisos.permitido(u, g)) {
                 g.getUsuarios().add(uDestino);
+                logger.log(Level.INFO, "Usuario asignado a grupo : {0}", uDestino.getEmail()+" " +g.getId().toString() + " usuario " + idUsuario);
                 return repositorioGrupo.save(g);
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);

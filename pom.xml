@@ -11,7 +11,7 @@
 	<groupId>josebailon.ensayos</groupId>
 	<artifactId>servidor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>servidor</name>
+	<name>ensayos-server</name>
 	<description>Servidor del TFG Ensayos</description>
 	<properties>
 		<java.version>19</java.version>
@@ -98,6 +98,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+                <finalName>ensayos_server</finalName>
 	</build>
 
 </project>

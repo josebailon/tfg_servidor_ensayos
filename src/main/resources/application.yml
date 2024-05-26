@@ -1,23 +1,26 @@
 ## YAML Template.
 ---
 server:
-    port: 8080
+    port: ${PUERTO_API:8080}
     address: 0.0.0.0
 security:
      jwt:
-         secret-key: keydeencriptacion
+         secret-key: ${KEY_ENCRIPTACION:keydeencriptacion}
 spring:
     application:
         name: Ensayos Servidor
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        password: 
-        url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/db_ensayos
-        #url: jdbc:mysql://192.168.1.53:3306/db_ensayos
-        username: root
+        url: jdbc:mysql://${MYSQL_HOST:localhost}:${PUERTO_API_MYSQL:3306}/${MYSQL_DATABASE:db_ensayos}
+        username: ${MYSQL_USER:root}
+        password: ${MYSQL_PASSWORD:}
     jpa:
         hibernate:
             ddl-auto: update
-        show-sql: true
+        show-sql: false
+logging:
+    file:
+        name: ${RUTA_ALMACENAMIENTO_API:G:/temp/almacenamiento}/log/servidor_ensayo.log
+
 almacenamiento:
-    ruta: G:/temp/almacenamiento
+    ruta: ${RUTA_ALMACENAMIENTO_API:G:/temp/almacenamiento}/audio

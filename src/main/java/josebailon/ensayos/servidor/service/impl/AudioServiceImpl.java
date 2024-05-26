@@ -9,8 +9,14 @@ package josebailon.ensayos.servidor.service.impl;
 import jakarta.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import josebailon.ensayos.servidor.config.AudioPropiedades;
 import josebailon.ensayos.servidor.model.entity.Audio;
 import josebailon.ensayos.servidor.model.entity.Nota;
@@ -47,6 +53,7 @@ public class AudioServiceImpl implements IAudioService {
     private final NotaRepository repositorioNota;
     private final AudioRepository repositorioAudio;
     private final AudioPropiedades audioPropiedades;
+    private Logger logger = Logger.getLogger(AudioServiceImpl.class.getName());
 
     @Override
     @Transactional
@@ -55,12 +62,10 @@ public class AudioServiceImpl implements IAudioService {
         Optional<Nota> nota = repositorioNota.findById(request.getId());
         Optional<Audio> audioLocal = repositorioAudio.findById(request.getId());
         if (usuario.isPresent()) {
-
             Usuario u = usuario.get();
             Nota n = nota.get();
             Audio a = new Audio();
             if (resolutorPermisos.permitido(u, n)) {
-                
                 //diferir a update si ya existe
                 if (audioLocal.isPresent()){
                     return this.edit(request, archivo, idUsuario);
@@ -75,6 +80,7 @@ public class AudioServiceImpl implements IAudioService {
                     a.setNombreArchivo(nombreArchivo);
                     a.setVersion(request.getVersion() + 1);
                     a.setNota(n);
+                    logger.log(Level.INFO, "Audio creado: {0}", a.getId().toString()+" usuario "+idUsuario);
                     return repositorioAudio.save(a);
                 } catch (IllegalStateException | IOException ex) {
                     throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -101,10 +107,11 @@ public class AudioServiceImpl implements IAudioService {
                     String nombreArchivoAnterior = a.getNombreArchivo();
                     try {
                         nombreArchivo = this.guardaArchivo(archivo);
-                        eliminaArchivo(nombreArchivoAnterior);
+                        eliminaArchivoAudio(nombreArchivoAnterior);
                         a=request;
                         a.setNombreArchivo(nombreArchivo);
                         a.setVersion(request.getVersion() + 1);
+                        logger.log(Level.INFO, "Audio editado: {0}", a.getId().toString()+" usuario "+idUsuario);
                         return repositorioAudio.save(a);
 
                     } catch (IllegalStateException | IOException ex) {
@@ -134,7 +141,8 @@ public class AudioServiceImpl implements IAudioService {
                         Nota n = a.getNota();
                         n.setAudio(null);
                         repositorioAudio.deleteById(a.getId());
-                        this.eliminaArchivo(a.getNombreArchivo());
+                        this.eliminaArchivoAudio(a.getNombreArchivo());
+                        logger.log(Level.INFO, "Audio eliminado: {0}", a.getId().toString()+" usuario "+idUsuario);
                     } catch (IllegalStateException | IOException ex) {
                         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
                     }
@@ -174,7 +182,7 @@ public class AudioServiceImpl implements IAudioService {
                 }
 
                 FileSystemResource resource = new FileSystemResource(archivo);
-
+                logger.log(Level.INFO, "Audio descargado: {0}", a.getId().toString()+" usuario "+idUsuario);
                 HttpHeaders header = new HttpHeaders();
                 header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+a.getNombreArchivo());
                 header.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -210,14 +218,32 @@ public class AudioServiceImpl implements IAudioService {
         return nombre;
     }
 
-    private boolean eliminaArchivo(String nombre) throws IllegalStateException, IOException {
+    @Override
+    public boolean eliminaArchivoAudio(String nombre) throws IllegalStateException, IOException {
         File rutaAlmacenamiento = new File(audioPropiedades.getRuta() + "/");
         File archivo = new File(audioPropiedades.getRuta() + "/" + nombre);
         boolean enAlmacenamiento = archivo.getCanonicalPath().startsWith(rutaAlmacenamiento.getCanonicalPath() + File.separator);
         if (!StringUtils.hasText(nombre) || !archivo.exists() || archivo.isDirectory() || !enAlmacenamiento) {
             return false;
         }
-        return archivo.delete();
+        boolean resultado= archivo.delete();
+        logger.log(Level.INFO, "Eliminado archivo {0}", archivo.getAbsolutePath());
+        return resultado;
     }
 
+    @Override
+    public List<File> getAllArchivoAudio(){
+        File rutaAlmacenamiento = new File(audioPropiedades.getRuta() + "/");
+        File[] archivos = rutaAlmacenamiento.listFiles();
+        return Arrays.asList(archivos).stream().filter((f) -> !f.isDirectory() && f.isFile()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Audio> getAllAudio() {
+        List<Audio> resultado = new ArrayList<>();
+        repositorioAudio.findAll().forEach(resultado::add);
+        return resultado;
+
+    }
+    
 }//end UserService

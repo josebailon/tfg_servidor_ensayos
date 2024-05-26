@@ -7,9 +7,7 @@ Lista de paquetes:
 
 package josebailon.ensayos.servidor.security;
 
-import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 
 /**
  *
@@ -19,7 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToken {
 
     private final UserPrincipal principal;
-    
+
     public UserPrincipalAuthenticationToken(UserPrincipal principal, UserPrincipalService userPrincipalService) {
         super(principal.getAuthorities());
         this.principal=principal;

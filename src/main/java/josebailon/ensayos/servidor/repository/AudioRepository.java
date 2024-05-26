@@ -9,7 +9,6 @@ package josebailon.ensayos.servidor.repository;
 
 import java.util.UUID;
 import josebailon.ensayos.servidor.model.entity.Audio;
-import josebailon.ensayos.servidor.model.entity.Nota;
 import org.springframework.data.repository.CrudRepository;
 
 /**
