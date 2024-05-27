@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+
 /**
+ * Controlador de endpoints para notas
  *
  * @author Jose Javier Bailon Ortiz
  */
@@ -37,16 +39,32 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class NotaController {
     
+    /**
+     * Servicio de notas
+     */
     private final INotaService notaService;
-    //Anotaciones
-    //RequestBody transforma el cuerpo de la peticion http al objeto java
-    //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
+    
+   /**
+    * Enspoint para crear una nota
+    * @param request Nota a crear
+    * @param idcancion UUID de la cancion a la que asignar la nota
+     * @param principal UserPrincipal de quien hace la peticion
+    * @return La nota creada
+    */
     @PostMapping("/{idcancion}")
     @JsonView(Vista.Esencial.class)
     public Nota create(@RequestBody @Valid Nota request, @PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal){
         return notaService.create(request,UUID.fromString(idcancion), principal.getUserId());
     }
 
+    /**
+     * Endpoint para editar una nota
+     * @param request Nota a editar
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return La nota editada
+     * @throws ResponseStatusException Si no se tienen permisos para editar la nota
+     * @throws VersionIncorrectaException  Si se intenta editar la nota con una version incorrecta
+     */
     @PutMapping()
     @JsonView(Vista.Esencial.class)
     public Nota edit(@RequestBody @Valid Nota request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
@@ -54,6 +72,14 @@ public class NotaController {
     }
     
     
+    /**
+     * Endpoint de borrado de una nota
+     * @param idnota UUID de la nota e eliminar
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return Respuesta vacia con status 200 si se ha borrado
+     * @throws ResponseStatusException Si no se tienen permisos para borrar
+     * @throws VersionIncorrectaException 
+     */
     @DeleteMapping("/{idnota}")
     @JsonView(Vista.Esencial.class)
     public ResponseEntity delete(@PathVariable String idnota, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{

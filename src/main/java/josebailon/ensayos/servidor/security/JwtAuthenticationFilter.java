@@ -20,15 +20,28 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Ejecuta el filtro de autenticacion para la peticion
+ * Ejecuta el filtro de autenticacion para las peticiones
  * @author Jose Javier Bailon Ortiz
  */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
+    /**
+     * Decodificador JWT
+     */
     private final JwtDecoder jwtDecoder;
+    
+    /**
+     * Transofrmador de JWT a user principal
+     */
     private final JwtToUserPrincipalConverter jwtToUserDetallesconverter;
+    
+    /**
+     * Servicio de user principal
+     */
     private final UserPrincipalService userPrincipalService;
+    
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         extraerTokenDePeticion(request)
@@ -40,9 +53,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
     }
 
     /**
-     * Extrae el token de la peticion como se extrae del header con Bearer hay que restar el inicio de la cadena
-     * @param request
-     * @return 
+     * Extrae el token de la peticion. Como se extrae del header con Bearer hay que restar el inicio de la cadena
+     * @param request Peticion que contiene el token
+     * @return  Un optional con el token
      */
     private Optional<String> extraerTokenDePeticion(HttpServletRequest request){
         String token = request.getHeader("Authorization");

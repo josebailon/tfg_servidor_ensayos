@@ -22,6 +22,11 @@ import org.springframework.stereotype.Component;
 public class JwtDecoder {
     private final JwtPropiedades propiedades;
     
+    /**
+     * Decodifica un token
+     * @param token Token a decodificar
+     * @return Un token JWT decodificado
+     */
     public DecodedJWT decode(String token){
         try{
             return JWT.require(Algorithm.HMAC256(propiedades.getSecretKey())).build().verify(token);

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
+ * Controlador de endpoints para grupos
  *
  * @author Jose Javier Bailon Ortiz
  */
@@ -37,26 +38,46 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class GrupoController {
     
+    /**
+     * Servicio de grupos
+     */
     private final IGrupoService grupoService;
     
-    //Anotaciones
-    //RequestBody transforma el cuerpo de la peticion http al objeto java
-    //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
-//    @JsonView(Vista.Esencial.class)
-//    @PostMapping()
-//    public Grupo create(@RequestBody @Valid Grupo request, @AuthenticationPrincipal UserPrincipal principal){
-//        return grupoService.create(request.getId(), request.getNombre(), request.getDescripcion(), request.getVersion(), principal.getUserId());
-//    }
+ 
+    /**
+     * Endpoint para crear un grupo
+     * @param request Peticion con el grupo a crear
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return El grupo creado
+     */
     @JsonView(Vista.Esencial.class)
     @PostMapping()
     public Grupo create(@RequestBody @Valid Grupo request, @AuthenticationPrincipal UserPrincipal principal){
         return grupoService.create(request, principal.getUserId());
     }
+    
+    /**
+     * Endpoint para editar un grupo
+     * @param request El grupo a editar
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return El grupo editado
+     * @throws ResponseStatusException Si no se tienen permisos para editar el grupo
+     * @throws VersionIncorrectaException  Si se ha intentado editar con version incorrecta
+     */
     @JsonView(Vista.Esencial.class)
     @PutMapping()
     public Grupo edit(@RequestBody @Valid Grupo request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         return grupoService.edit(request, principal.getUserId());
     }
+    
+    /**
+     * Endpoint para eliminar un grupo
+     * @param idgrupo UUID del grupo a eliminar
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return Response vacia con status 200 si se ha eliminado correctamente
+     * @throws ResponseStatusException Si no se tienen permisos para eliminar
+     * @throws VersionIncorrectaException 
+     */
     @JsonView(Vista.Esencial.class)
     @DeleteMapping("/{idgrupo}")
     public ResponseEntity delete(@PathVariable String idgrupo, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
@@ -64,7 +85,13 @@ public class GrupoController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     
-    //Agregar usuario a gruo
+    /**
+     * Endpoint para asignar un usuario a un grupo
+     * @param idgrupo UUID del grupo al que asignar el usuario
+     * @param emailusuario Email del usuario a asignar al grupo
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return El grupo tras la insercion
+     */
     @JsonView(Vista.Esencial.class)
     @PostMapping("/{idgrupo}/{emailusuario}")
     public Grupo addUsuario(@PathVariable String idgrupo, @PathVariable String emailusuario, @AuthenticationPrincipal UserPrincipal principal){
@@ -73,7 +100,13 @@ public class GrupoController {
         return grupoService.addUsuario(UUID.fromString(idgrupo), emailusuario,principal.getUserId());
     }
     
-    //Sacar usuario de grupo
+    /**
+     * Endpoint para sacar un usuario de un grupo
+     * @param idgrupo UUID del grupo del que sacar el usuario
+     * @param emailusuario Email del usuario que sacar del grupo
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return El grupo tras quitar el usuario
+     */
     @JsonView(Vista.Esencial.class)
     @DeleteMapping("/{idgrupo}/{emailusuario}")
     public Grupo deleteUsuario(@PathVariable String idgrupo, @PathVariable String emailusuario, @AuthenticationPrincipal UserPrincipal principal){

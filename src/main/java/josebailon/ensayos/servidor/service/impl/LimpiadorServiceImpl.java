@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Implementacion del servicio de limpieza de almacenamiento
  * @author Jose Javier Bailon Ortiz
  */
 @Service

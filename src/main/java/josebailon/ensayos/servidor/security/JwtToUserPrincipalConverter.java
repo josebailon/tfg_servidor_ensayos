@@ -28,6 +28,11 @@ public class JwtToUserPrincipalConverter {
                 
     }
     
+    /** 
+     * Extrae las autorities del claim autorities del token
+     * @param jwt El token JWT decodificado
+     * @return  Lista de GrantedAutority
+     */
     private List<SimpleGrantedAuthority> extraerAuthoritiesDeClaim(DecodedJWT jwt){
         Claim claim = jwt.getClaim("authorities");
         if (claim.isNull() || claim.isMissing())

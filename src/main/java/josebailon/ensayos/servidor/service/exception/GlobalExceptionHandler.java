@@ -24,22 +24,39 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
+ * Gestor global de excepciones de las peticiones
  * @author Jose Javier Bailon Ortiz
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handler de email duplicado
+     * @param ex
+     * @return Respuesta con mensaje y estatus 409 conflicto
+     */
     @ExceptionHandler(DuplicatedEmailException.class)
     public ResponseEntity<String> handleDuplicatedEmailException(final DuplicatedEmailException ex) {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
+    
+    /**
+     * Handler general para cualquier excepcion de status
+     * @param ex
+     * @return  Response con el status definido en la excepcion
+     */
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<String> handleResponseStatusException(final ResponseStatusException ex) {
         return new ResponseEntity<String>(ex.getMessage(), ex.getStatusCode());
     }
 
+    
+    /**
+     * Handler de version incorrecta
+     * @param ex
+     * @return Respuesta con el valor del objeto con el que se ha generado conflicto y el stattus 409
+     */
     @ExceptionHandler(VersionIncorrectaException.class)
     @RequestMapping(produces = "application/json")
     @JsonView(Vista.Esencial.class)
@@ -48,6 +65,12 @@ public class GlobalExceptionHandler {
 
     }
 
+    
+    /**
+     * Handler de objeto duplicado
+     * @param ex
+     * @return  Respuesta con mensaje y status 409
+     */
     @ExceptionHandler(NonUniqueObjectException.class)
     @RequestMapping(produces = "application/json")
     public ResponseEntity<Object> handleNonUniqueObjectException(final NonUniqueObjectException ex) {
@@ -55,6 +78,12 @@ public class GlobalExceptionHandler {
 
     }
 
+    
+    /**
+     * Handler de peticiones no legibles
+     * @param ex
+     * @return REspuesta con mensaje y status 400 bad request
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @RequestMapping(produces = "application/json")
     @JsonView(Vista.Esencial.class)
@@ -62,12 +91,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    
+    /**
+     * Handler de peticiones multipart donde una parte no existe
+     * @param ex
+     * @return REspuesta con mensaje y estatus 400 bad request
+     */
     @ExceptionHandler(MissingServletRequestPartException.class)
     @RequestMapping(produces = "application/json")
     public ResponseEntity<Object> handleMissingServletRequestPartException(final MissingServletRequestPartException ex) {
         return new ResponseEntity<Object>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    
+    /**
+     * Handler para exepciones de argumentos no validos (por ejemplo valore no permitidos)
+     * @param ex
+     * @return REspuesta con los errores y el status 400 bad request 
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @RequestMapping(produces = "application/json")
     public ResponseEntity<Object> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
@@ -81,6 +122,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    
+    /**
+     * Handler para excepciones de violacion de constraints.
+     * Sucede al intentar hacer peticiones con valores no permitidos segun las especificaciones de las entidades
+     * @param ex
+     * @return REspuesta con el objeto que ha dado lugar a la excepcion y un status 400 bad request
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     @RequestMapping(produces = "application/json")
     public ResponseEntity<Object> handleConstraintViolationException(final ConstraintViolationException ex) {

@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- *
+ * Define el formato de una peticion para hacer un registro
  * @author Jose Javier Bailon Ortiz
  */
 @Getter //autogenerar getters

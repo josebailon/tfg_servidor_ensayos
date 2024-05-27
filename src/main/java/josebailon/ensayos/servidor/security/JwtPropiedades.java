@@ -13,7 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
+ * Accesor a las propiedades de JWT (ver application.yml)
  * @author Jose Javier Bailon Ortiz
  */
 @Getter

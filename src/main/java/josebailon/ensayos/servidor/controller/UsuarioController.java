@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
+ * Controlador de endpoints para acciones generales sobre usuarios
  *
  * @author Jose Javier Bailon Ortiz
  */
@@ -33,20 +34,32 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class UsuarioController {
     
+    /**
+     * SErvicio de suaurios
+     */
     private final IUsuarioService usuarioService;
     
-    //Anotaciones
-    //RequestBody transforma el cuerpo de la peticion http al objeto java
-    //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
+    /**
+     * Endpoint para recoger todos los datos a los que tiene acceso un usuario
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return Arbol JSON con los grupos, canciones, notas y audios a los que el usuario definido en principal tiene acceso
+     */
     @JsonView(Vista.Completa.class)
     @GetMapping("/grupos")
     public List<Grupo> gruposDeUsuario(@AuthenticationPrincipal UserPrincipal principal){
         return usuarioService.getGruposCompletos(principal.getUserId());
     }
 
+    /**
+     * Endpoint para comprobar si un email esta usado
+     * @param email Email a comprobar
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return El usuario si existe
+     * @throws ResponseStatusException  Response con status 404 not found si no existe el usuario
+     */
     @JsonView(Vista.Esencial.class)
     @GetMapping("/existe/{email}")
-    public Usuario usuario(@PathVariable String email, @AuthenticationPrincipal UserPrincipal principal){
+    public Usuario usuario(@PathVariable String email, @AuthenticationPrincipal UserPrincipal principal) throws ResponseStatusException{
         Optional<Usuario> usuario = usuarioService.findByEmail(email);
         if (!usuario.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND); 

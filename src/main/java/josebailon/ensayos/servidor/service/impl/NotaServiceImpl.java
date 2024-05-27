@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
+ * Implementacion del servicio de notas
  * @author Jose Javier Bailon Ortiz
  */
 

@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 //definir como clase de configuracion
 @Configuration
 
-//definir como clase de configuracion de servicio web
+//definir como clase de configuracion de seguridad
 @EnableWebSecurity
 
 @RequiredArgsConstructor
@@ -38,9 +38,9 @@ public class WebSecurityConfig {
     
     /**
      * Configuracion de la seguridad
-     * @param http
-     * @return
-     * @throws Exception 
+     * @param http Peticion http
+     * @return Devuelve una cadena de seguridad
+     * @throws Exception Si se produce un problema durante la creacion de la cadena
      */
     @Bean
     public SecurityFilterChain applicationSecurity(HttpSecurity http) throws Exception{
@@ -55,12 +55,15 @@ public class WebSecurityConfig {
                     (registro) -> registro.requestMatchers("/").permitAll()//permitir la raiz para todos
                     .requestMatchers("/auth/login").permitAll()//permitir para todos la ruta de autorizacion
                     .requestMatchers("/auth/registrar").permitAll()
-                    //.requestMatchers("/admin/**").hasRole("ADMIN") //seccion para administracion
                     .anyRequest().authenticated()//el resto de rutas solo permitirlas a los autenticados
             ).build();
     }
     
     
+    /**
+     * Define el codificador  para passwords
+     * @return El codificador
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -71,7 +74,7 @@ public class WebSecurityConfig {
         //Crear el builder del autentication manager
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
         
-        //establecer servicio a usar para extraer usuarios
+        //establecer servicio a usar para extraer user principals del sistema
         builder.userDetailsService(userPrincipalService)
                 .passwordEncoder(passwordEncoder());
         //crear y devolver

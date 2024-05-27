@@ -26,7 +26,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
+ * Entidad de Cancion para la base de datos
+ * 
  * @author Jose Javier Bailon Ortiz
  */
 @Entity

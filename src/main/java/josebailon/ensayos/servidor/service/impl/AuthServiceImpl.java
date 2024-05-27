@@ -27,7 +27,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Implementacion del servicio de autorizacion
  * @author Jose Javier Bailon Ortiz
  */
 @Service

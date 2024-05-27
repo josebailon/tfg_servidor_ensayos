@@ -10,7 +10,8 @@ package josebailon.ensayos.servidor.security;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 /**
- *
+ * Clase de autentificacion en base a un usuario que se ha sacado de un token
+ * 
  * @author Jose Javier Bailon Ortiz
  */
 

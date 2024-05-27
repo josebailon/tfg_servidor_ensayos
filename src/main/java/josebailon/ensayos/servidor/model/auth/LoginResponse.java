@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- *
+ * Define el formato de una respuesta de login exitoso
  * @author Jose Javier Bailon Ortiz
  */
 @Getter

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
+ * Implementacion del servicio de grupos
  * @author Jose Javier Bailon Ortiz
  */
 @Service

@@ -24,7 +24,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
+ * Entidad de Usuario para la base de datos
+ * 
  * @author Jose Javier Bailon Ortiz
  */
 @Entity

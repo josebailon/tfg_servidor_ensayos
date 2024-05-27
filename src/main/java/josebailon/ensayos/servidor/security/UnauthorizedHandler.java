@@ -18,7 +18,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * Manejador de excepciones de no autorizacion
  * @author Jose Javier Bailon Ortiz
  */
 @Component

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
+ * Controlador de endpoints para canciones
  *
  * @author Jose Javier Bailon Ortiz
  */
@@ -37,21 +38,46 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class CancionController {
     
+    /**
+     * Servicio de canciones
+     */
     private final ICancionService cancionService;
-    //Anotaciones
-    //RequestBody transforma el cuerpo de la peticion http al objeto java
-    //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
+    
+    /**
+     * Endpoint para crear una cancion
+     * @param request Request con la cancion a crear
+     * @param idgrupo UUID del grupo al que asignar la cancion
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return La cancion creada
+     */
     @PostMapping("/{idgrupo}")
     @JsonView(Vista.Esencial.class)
     public Cancion create(@RequestBody @Valid Cancion request, @PathVariable String idgrupo, @AuthenticationPrincipal UserPrincipal principal){
         return cancionService.create(request,UUID.fromString(idgrupo), principal.getUserId());
     }
 
+    /**
+     * Endpoint para editar una cancion
+     * @param request Request con la cancion a editar
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return La cancion editada
+     * @throws ResponseStatusException Si no se tiene permiso para editar la cancion
+     * @throws VersionIncorrectaException  Si se ha intentado editar con una version incorrecta
+     */
     @PutMapping()
     @JsonView(Vista.Esencial.class)
     public Cancion edit(@RequestBody @Valid Cancion request, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
         return cancionService.edit(request, principal.getUserId());
     }
+    
+    /**
+     * Endpoint para borrar una cancion
+     * @param idcancion UUID de la cancion
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return Response vacia con status 200 si se ha borrado bien
+     * @throws ResponseStatusException Si no se tienen permisos para borrar
+     * @throws VersionIncorrectaException 
+     */
     @DeleteMapping("/{idcancion}")
     @JsonView(Vista.Esencial.class)
     public ResponseEntity delete(@PathVariable String idcancion, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{

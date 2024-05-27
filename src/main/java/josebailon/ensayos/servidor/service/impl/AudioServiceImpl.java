@@ -40,7 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
+ * Implementacion del servicio de audios
  * @author Jose Javier Bailon Ortiz
  */
 @Service
@@ -71,12 +71,10 @@ public class AudioServiceImpl implements IAudioService {
                     return this.edit(request, archivo, idUsuario);
                 }
                 
-                
                 String nombreArchivo;
                 try {
                     nombreArchivo = this.guardaArchivo(archivo);
                     a = request;
-//                    a.setId(idAudio);
                     a.setNombreArchivo(nombreArchivo);
                     a.setVersion(request.getVersion() + 1);
                     a.setNota(n);

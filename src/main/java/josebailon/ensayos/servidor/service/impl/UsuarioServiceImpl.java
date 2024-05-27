@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
+ * Implementacion del servicio de usuarios
  * @author Jose Javier Bailon Ortiz
  */
 

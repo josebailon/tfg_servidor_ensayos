@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- *
+ * Define el formato de una peticion para hacer login
  * @author Jose Javier Bailon Ortizs
  */
 @Getter //autogenerar getters

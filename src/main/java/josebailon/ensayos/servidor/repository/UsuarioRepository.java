@@ -12,7 +12,7 @@ import josebailon.ensayos.servidor.model.entity.Usuario;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- *
+ * Repositorio CRUD de acceso a los usuarios en la base de datos
  * @author Jose Javier Bailon Ortiz
  */
 public interface UsuarioRepository  extends CrudRepository<Usuario, Long>{

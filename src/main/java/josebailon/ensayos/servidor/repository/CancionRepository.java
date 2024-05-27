@@ -12,7 +12,7 @@ import josebailon.ensayos.servidor.model.entity.Cancion;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- *
+ * Repositorio CRUD de acceso a las canciones en la base de datos
  * @author Jose Javier Bailon Ortiz
  */
 public interface CancionRepository  extends CrudRepository<Cancion, UUID>{

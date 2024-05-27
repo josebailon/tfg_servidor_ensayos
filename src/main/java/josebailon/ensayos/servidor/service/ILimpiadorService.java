@@ -7,10 +7,14 @@ Lista de paquetes:
 package josebailon.ensayos.servidor.service;
 
 /**
- *
+ * Interfaz del servicio de limpieza de almacenamiento
  * @author Jose Javier Bailon Ortiz
  */
 public interface ILimpiadorService {
+    
+    /**
+     * Ejecutar la limpieza del almacenamiento
+     */
     public void limpiarAlmacenamiento();
 
 }

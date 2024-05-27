@@ -23,7 +23,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
+ * Entidad de audio para la base de datos
+ * 
  * @author Jose Javier Bailon Ortiz
  */
 @Entity

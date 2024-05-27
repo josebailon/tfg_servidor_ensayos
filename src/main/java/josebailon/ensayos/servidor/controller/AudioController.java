@@ -4,7 +4,6 @@ LICENCIA JOSE JAVIER BO
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
 Lista de paquetes:
  */
-
 package josebailon.ensayos.servidor.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -34,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
+ * Controlador de endpoints para audios
  *
  * @author Jose Javier Bailon Ortiz
  */
@@ -41,38 +41,72 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/audio")
 @RequiredArgsConstructor
 public class AudioController {
+
     private final AudioPropiedades audioPropiedades;
     private final IAudioService audioService;
-    
-    
+
+    /**
+     * Endpoint crear audio
+     *
+     * @param request Json con el audio a crear
+     * @param archivo Archivo de audio asignado
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return El audio creado
+     * @throws ResponseStatusException Si no se tiene permiso para crear el
+     * audio o a ocurrido un error
+     * @throws VersionIncorrectaException Si la version es incorrecta
+     */
     @PostMapping("")
     @JsonView(Vista.Esencial.class)
-    public Audio create( @RequestPart("datos") @Valid Audio request, @RequestPart("archivo") MultipartFile archivo, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
-        return audioService.create(request,archivo, principal.getUserId());
+    public Audio create(@RequestPart("datos") @Valid Audio request, @RequestPart("archivo") MultipartFile archivo, @AuthenticationPrincipal UserPrincipal principal) throws ResponseStatusException, VersionIncorrectaException {
+        return audioService.create(request, archivo, principal.getUserId());
     }
-    
-    
+
+    /**
+     * Endpoint para actualizar un audio
+     *
+     * @param request Json con el audio a editar
+     * @param archivo Archivo de audio asignado
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return El audio editado
+     * @throws ResponseStatusException Si no se tiene permiso para editar el
+     * audio o a ocurrido un error
+     * @throws VersionIncorrectaException Si la version es incorrecta
+     */
     @PutMapping("")
     @JsonView(Vista.Esencial.class)
-    public Audio edit(@RequestPart("datos") @Valid Audio request, @RequestPart("archivo") MultipartFile archivo, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+    public Audio edit(@RequestPart("datos") @Valid Audio request, @RequestPart("archivo") MultipartFile archivo, @AuthenticationPrincipal UserPrincipal principal) throws ResponseStatusException, VersionIncorrectaException {
         System.out.println(request);
         return audioService.edit(request, archivo, principal.getUserId());
     }
-    
-   @DeleteMapping("/{idaudio}")
+
+    /**
+     * Endpoint para borrar un audio
+     *
+     * @param idaudio UUID del audio a eliminiar
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return Respuesta vacía con el status 200 si ha sido eliminado
+     * @throws ResponseStatusException Si no hay permiosos para eliminar
+     * @throws VersionIncorrectaException
+     */
+    @DeleteMapping("/{idaudio}")
     @JsonView(Vista.Esencial.class)
-    public ResponseEntity delete(@PathVariable String idaudio, @AuthenticationPrincipal UserPrincipal principal)throws ResponseStatusException, VersionIncorrectaException{
+    public ResponseEntity delete(@PathVariable String idaudio, @AuthenticationPrincipal UserPrincipal principal) throws ResponseStatusException, VersionIncorrectaException {
         audioService.delete(UUID.fromString(idaudio), principal.getUserId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-    
-    
- 
- 
+
+    /**
+     * Endpoint para descarga de archivo de audio
+     * @param audioid UUID del audio al que pertenece el archivo
+     * @param principal UserPrincipal de quien hace la peticion
+     * @return ResponseEntitiy con el archivo de audio
+     * @throws IOException Si ha ocurrido un error accediendo al archivo
+     */
     @GetMapping(path = "/{audioid}")
-public ResponseEntity<Resource> get(@PathVariable String audioid,@AuthenticationPrincipal UserPrincipal principal) throws IOException {
-    
-        return audioService.get(UUID.fromString(audioid),principal.getUserId());
-}
-    
+    public ResponseEntity<Resource> get(@PathVariable String audioid, @AuthenticationPrincipal UserPrincipal principal) throws IOException {
+
+        return audioService.get(UUID.fromString(audioid), principal.getUserId());
+    }
+
 }//end AuthController

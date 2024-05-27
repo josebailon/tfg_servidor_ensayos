@@ -15,9 +15,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Objeto para que el authentication manager de spring security trabaje.
+ * Objeto usuario para que el authentication manager de spring security trabaje.
  * 
- * Se basa en el username y el password. 
+ * Se basa la id, el username y el password. 
  * 
  * 
  * @author Jose Javier Bailon Ortiz

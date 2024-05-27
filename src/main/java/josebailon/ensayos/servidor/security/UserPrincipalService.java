@@ -18,13 +18,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 /**
- *
+ * Servicio de creacion del user principal. Lo crea a partir  de un username
  * @author Jose Javier Bailon Ortiz
  */
 @Component
 @RequiredArgsConstructor
 public class UserPrincipalService implements UserDetailsService{
 
+    /**
+     * Servicio de usuarios de la base de datos
+     */
     private final IUsuarioService  usuarioService;
     
     @Override

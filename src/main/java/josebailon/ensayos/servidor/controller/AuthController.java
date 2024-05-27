@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * Controlador de endpoints para login y registro
  *
  * @author Jose Javier Bailon Ortiz
  */
@@ -29,16 +30,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     
+    /**
+     * Servicio de autentificacion
+     */
     private final IAuthService authService;
 
-    //Anotaciones
-    //RequestBody transforma el cuerpo de la peticion http al objeto java
-    //Validated valida la request segun las anotaciones del tipo de objeto (en este caso LoginRequest)
+    /**
+     * Endpoint para login
+     * 
+     * @param request Request con formato JSON con los campos email y password indicando los datos del login del usuario
+     * @return 
+     */
     @PostMapping("/login")
     public LoginResponse login(@RequestBody @Valid LoginRequest request){
         return authService.intentoLogin(request.getEmail(), request.getPassword());
     }
     
+
+    /**
+     * Endpoint para registro de un usuario
+     * @param request Request con formato JSON con los campos email y password indicando los datos del registro del usuario
+     * @return Response con el token de acceso
+     * 
+     * @throws DuplicatedEmailException Si el email introducido ya esta en uso
+     */
     @PostMapping("/registrar")
     public Usuario registrar(@RequestBody @Valid RegistrarRequest request) throws DuplicatedEmailException{
         return authService.registrar(request.getEmail(),request.getPassword());

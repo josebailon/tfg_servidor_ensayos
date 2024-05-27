@@ -12,7 +12,7 @@ import josebailon.ensayos.servidor.model.entity.Audio;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- *
+ * Repositorio CRUD de acceso a los audios en la base de datos
  * @author Jose Javier Bailon Ortiz
  */
 public interface AudioRepository  extends CrudRepository<Audio, UUID>{
