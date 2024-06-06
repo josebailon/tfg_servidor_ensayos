@@ -33,13 +33,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements IAuthService{
-    private final JwtPropiedades propiedades;
-
     private final JwtCreadorToken jwtCreadorToken;
     private final AuthenticationManager authenticationManager;
     private final UsuarioRepository repositorio;
     private Logger logger = Logger.getLogger(AuthServiceImpl.class.getName());
 
+    @Override
     public LoginResponse intentoLogin(String email, String password){
         
         logger.log(Level.INFO, "Login intento: {0}", email);

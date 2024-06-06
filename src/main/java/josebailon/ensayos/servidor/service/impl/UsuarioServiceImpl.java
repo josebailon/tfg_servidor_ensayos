@@ -33,10 +33,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class UsuarioServiceImpl implements IUsuarioService{
     
         private final UsuarioRepository repositorioUsuario;
-        private final GrupoRepository repositorioGrupo;
     
         private Logger logger = Logger.getLogger(UsuarioServiceImpl.class.getName());
 
+      @Override
     public Optional<Usuario> findByEmail(String email){
         return repositorioUsuario.findByEmail(email);
     }

@@ -130,6 +130,9 @@ public class GrupoServiceImpl implements IGrupoService {
                 if (!g.getUsuarios().contains(uDestino)) {
                     return g;
                 }
+                //responder 409 si es el ultimo usuario
+                if (g.getUsuarios().size()==1)
+                    throw new ResponseStatusException(HttpStatus.CONFLICT);
                 //Desasignar usuario    
                 uDestino.getGrupos().remove(g);
                 g.getUsuarios().remove(uDestino);

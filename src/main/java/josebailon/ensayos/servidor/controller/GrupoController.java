@@ -95,7 +95,6 @@ public class GrupoController {
     @JsonView(Vista.Esencial.class)
     @PostMapping("/{idgrupo}/{emailusuario}")
     public Grupo addUsuario(@PathVariable String idgrupo, @PathVariable String emailusuario, @AuthenticationPrincipal UserPrincipal principal){
-        System.out.println(idgrupo+" "+emailusuario);
                 
         return grupoService.addUsuario(UUID.fromString(idgrupo), emailusuario,principal.getUserId());
     }

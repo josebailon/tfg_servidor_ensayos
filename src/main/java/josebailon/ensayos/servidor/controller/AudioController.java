@@ -42,8 +42,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AudioController {
 
-    private final AudioPropiedades audioPropiedades;
-    private final IAudioService audioService;
+     private final IAudioService audioService;
 
     /**
      * Endpoint crear audio

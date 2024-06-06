@@ -38,7 +38,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class NotaServiceImpl implements INotaService{
         private final ResolutorPermisos resolutorPermisos;
         private final UsuarioRepository repositorioUsuario;
-        private final GrupoRepository repositorioGrupo;
         private final CancionRepository repositorioCancion;
         private final NotaRepository repositorioNota;
     private Logger logger = Logger.getLogger(NotaServiceImpl.class.getName());

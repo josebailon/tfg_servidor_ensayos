@@ -10,7 +10,7 @@ docker build -t ensayos-server .
 docker-compose down -v
 
 
-
+docker save -o c:/ensayos_server_api.tar ensayos_server
 docker import ensayos_server_api.tar
 docker image tag 0b52fe7173632c2d042ff680ea0b85857d11326c678bb359352caac468191cec ensayos_server_api:latest
 docker system prune -a
