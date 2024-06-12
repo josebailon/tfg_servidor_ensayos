@@ -10,7 +10,7 @@
     </parent>
     <groupId>josebailon.ensayos</groupId>
     <artifactId>servidor</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>ensayos-server</name>
     <description>Servidor del TFG Ensayos</description>
     <properties>

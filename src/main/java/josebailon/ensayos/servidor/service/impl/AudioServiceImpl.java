@@ -203,7 +203,8 @@ public class AudioServiceImpl implements IAudioService {
     }
 
     private String guardaArchivo(MultipartFile archivo) throws IllegalStateException, IOException {
-
+        //asegurar que el directorio existe 
+        checkDirectorio();
         //comprobar que es un mp3
         if (!archivo.getContentType().equalsIgnoreCase("audio/mpeg")) {
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
@@ -231,6 +232,7 @@ public class AudioServiceImpl implements IAudioService {
 
     @Override
     public List<File> getAllArchivoAudio(){
+        checkDirectorio();
         File rutaAlmacenamiento = new File(audioPropiedades.getRuta() + "/");
         File[] archivos = rutaAlmacenamiento.listFiles();
         return Arrays.asList(archivos).stream().filter((f) -> !f.isDirectory() && f.isFile()).collect(Collectors.toList());
@@ -242,6 +244,20 @@ public class AudioServiceImpl implements IAudioService {
         repositorioAudio.findAll().forEach(resultado::add);
         return resultado;
 
+    }
+    
+    /**
+     * Comprueba que el directorio de almacenamiento de audios existe y si no
+     * existe lo crea
+     */
+    private void checkDirectorio(){
+        File ruta = new File(audioPropiedades.getRuta());
+        if (!ruta.exists())
+            if (!ruta.mkdir()){
+                logger.log(Level.SEVERE, "No se puede crear la ruta de almacenamiento {0}", ruta.getAbsolutePath());
+                System.exit(1000);
+            }
+        
     }
     
 }//end UserService

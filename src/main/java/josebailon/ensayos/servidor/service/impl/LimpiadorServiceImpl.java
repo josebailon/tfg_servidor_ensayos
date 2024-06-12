@@ -45,7 +45,7 @@ public class LimpiadorServiceImpl implements ILimpiadorService{
                     .isPresent();
             if (!existeEnBD)
                 try {
-                    
+                //borrar si no existe en la base de datos y tiene una edad mayor a 5 minutos    
                 Instant fechaMod = Instant.ofEpochMilli(archivo.lastModified());
                 if (fechaMod.isBefore(Instant.now().minus(5,ChronoUnit.MINUTES)))
                     audioService.eliminaArchivoAudio(archivo.getName());

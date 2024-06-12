@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.UUID;
-import josebailon.ensayos.servidor.config.AudioPropiedades;
 import josebailon.ensayos.servidor.model.entity.Audio;
 import josebailon.ensayos.servidor.model.vistas.Vista;
 import josebailon.ensayos.servidor.security.UserPrincipal;
